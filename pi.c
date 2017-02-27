@@ -12,7 +12,8 @@ int main() {
 		y = rand();
 		circle += (x*x + y*y)/rand_max2;
 	}		
-	float pi = 4.0*(N-circle)/((N));
+	
+	float pi = 4.0*(N - circle)/N;
 	printf("pi = %f\n", pi);
 		
 	return 0;
