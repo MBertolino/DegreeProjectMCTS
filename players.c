@@ -4,15 +4,14 @@
 
 
 int monte_carlo(int* rows, int N_rows, int total_sticks) {
-  printf("test\n");
+
   int win = 1;
   int* rows_temp = (int*)malloc(N_rows*sizeof(int));
-  //*rows_temp = *rows;
   for (int i = 0; i < N_rows; i++) {
     rows_temp[i] = rows[i];
   }
   
-  // Print rows
+  /*// Print rows
   printf("--COPY------------\n");
   for (int i = 0; i < N_rows; i++) {
     printf("%i (%i):\t", i+1, rows_temp[i]);
@@ -20,7 +19,7 @@ int monte_carlo(int* rows, int N_rows, int total_sticks) {
       printf("|");
     printf("\n");
   }
-  printf("--COPY------------\n");
+  printf("--COPY------------\n");*/
 
   // Simulate the game
   int row, sticks;
@@ -89,11 +88,22 @@ void s_player(move_t* res, int* rows, int N_rows, int total_sticks) {
   
   // Simulate moves using Monte Carlo
   int i;
-  for (i = 0; i < N_rows; i++) {
-    for (int j = 1; j <= rows[i]; j++) {
-      stats[i][j] += monte_carlo(rows, N_rows, total_sticks);
+  for (int k = 0; k < 10000; k++) {
+    for (i = 0; i < N_rows; i++) {
+      for (int j = 1; j <= rows[i]; j++) {
+        stats[i][j] += monte_carlo(rows, N_rows, total_sticks);
+      }
     }
   }
+  
+  printf("stats = \n");
+  for (int m = 0; m < N_rows; m++) {
+      for (int j = rows[m]; j >= 1; j--) {
+        printf("%i ", stats[m][j]);
+      }
+      printf("\n");
+    }
+    printf("\n");
   
   // Find the "best" move
   int row = i;

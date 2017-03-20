@@ -13,7 +13,7 @@ all:$(EXECUTABLE)
 $(EXECUTABLE): $(OBJS)
 	$(LD) -o $(EXECUTABLE) $(OBJS) $(LDFLAGS)
 
-players.o: players.h structs.h
+players.o: players.c players.h structs.h
 	$(CC) $(CFLAGS) $(INCLUDES) -c players.c -std=c99
 
 nim.o: nim.c players.c players.h structs.h
