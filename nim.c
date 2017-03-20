@@ -1,9 +1,18 @@
+#define _BSD_SOURCE
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
+#include <unistd.h>
+#include "players.h"
+
+#define C_NORMAL "\x1B[0m"
+#define C_RED    "\x1B[31m"
+#define C_GREEN  "\x1B[32m"
+
 
 void print_board(int N_rows, int *rows) {
-	for (int i = 0; i < N_rows; i++) {
+  for (int i = 0; i < N_rows; i++) {
     printf("%i (%i):\t", i+1, rows[i]);
     for (int j = 0; j < rows[i]; j++)
       printf("|");
@@ -14,28 +23,28 @@ void print_board(int N_rows, int *rows) {
 
 int main(int argc, char *argv[]) {
   
-  if (argc != 3) {
-    printf("Expects 2 arguments, # rows and sticks\n");
+  if (argc != 2) {
+    printf("Expected number of rows as input argument.\n");
     return -1;
   }
-  int N_rows = atoi(argv[1]);
-  int sticks = atoi(argv[2]);
-  int total_sticks = N_rows*sticks;
   
-  if (N_rows < 1 && sticks < 1) {
-    printf("Rows and sticks must be > 0.\n");
+  int N_rows = atoi(argv[1]);
+  if (N_rows < 1) {
+    printf("Numbe of rows must be > 0.\n");
     return -1;
   }
   
   int *rows = (int*)malloc(N_rows*sizeof(int));
+  int total_sticks = 0;
   for (int i = 0; i < N_rows; i++) {
-    rows[i] = sticks;
+    rows[i] = 3 + i*2;
+    total_sticks += rows[i];
   }
   
-  double p = 0.4;
+  double p = 0.5;
   int player = 2;
-  int row, pick;
-  int X;
+  int row, sticks;
+  move_t* res = (move_t*)malloc(sizeof(move_t));
   
   srand(time(NULL));
   
@@ -44,11 +53,15 @@ int main(int argc, char *argv[]) {
     
     printf("\n");
     print_board(N_rows, rows);
-    printf("Player %i:s turn: \n", player);
+    if (player == 1)
+      printf("%sPlayer %i%s:s turn: \n", C_GREEN, player, C_NORMAL);
+    else
+      printf("%sPlayer %i%s:s turn: \n", C_RED, player, C_NORMAL);
     
+    // Human player
     if (player == 1) {
       while (1) {
-        int ret = scanf("%i%i", &row, &pick); // cannot read strings
+        int ret = scanf("%i%i", &row, &sticks); // cannot read strings
         row--;
         if (ret <= 0) {
           printf("Illegal input: Enter numbers plz. Try again.\n");
@@ -59,40 +72,23 @@ int main(int argc, char *argv[]) {
           printf("Illegal move: Rows out of bounds. Try again.\n");
           print_board(N_rows, rows);
           continue;
-        } else if (pick < 1 || pick > rows[row]) {
+        } else if (sticks < 1 || sticks > rows[row]) {
           printf("Illegal move: Wrong number of sticks. Try again.\n");
           print_board(N_rows, rows);
           continue;
         }
         break;
       }
+    
+    // Computer
     } else {
-      X = 0;
-      row = 1;
-      for (int i = 0; i < N_rows; i++)
-        X ^= rows[i];
-      if (X == 0 || p < (double)rand()/RAND_MAX) {
-        do {
-          row = (double)N_rows*rand()/RAND_MAX;
-          printf("row = %i\n", row);
-        } while (rows[row] == 0);
-      pick = 1 + (double)rows[row]*rand()/RAND_MAX;
-      printf("pick = %i\n", pick);
-      } else {
-        for (int i = 0; i < N_rows; i++) {
-          if ((X^rows[i]) < rows[i]) {
-            row = i+1;
-            pick = rows[i] - (X^rows[i]);
-            break;
-          }
-        }
-      }
+      p_player(res, rows, N_rows, p);
+      row = res->row;
+      sticks = res->sticks;
     }
     
-    
-    rows[row] -= pick;
-    
-    total_sticks -= pick;
+    rows[row] -= sticks;
+    total_sticks -= sticks;
     if (total_sticks <= 0) {
       printf("\nPlayer %i wins!\n", player);
       break;
@@ -100,6 +96,7 @@ int main(int argc, char *argv[]) {
     
   }
   
+  free(res);
   return 0;
 }
 
