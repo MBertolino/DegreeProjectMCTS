@@ -3,26 +3,17 @@
 #include "structs.h"
 
 
-int monte_carlo(int* rows, int N_rows, int total_sticks) {
+int monte_carlo(int* rows, int N_rows, int total_sticks, int row, int sticks) {
 
   int win = 1;
   int* rows_temp = (int*)malloc(N_rows*sizeof(int));
   for (int i = 0; i < N_rows; i++) {
     rows_temp[i] = rows[i];
   }
+  rows_temp[row] -= sticks;
+  total_sticks -= sticks;
   
-  /*// Print rows
-  printf("--COPY------------\n");
-  for (int i = 0; i < N_rows; i++) {
-    printf("%i (%i):\t", i+1, rows_temp[i]);
-    for (int j = 0; j < rows_temp[i]; j++)
-      printf("|");
-    printf("\n");
-  }
-  printf("--COPY------------\n");*/
-
   // Simulate the game
-  int row, sticks;
   while (1) {
     win = 1 - win;
     do {
@@ -59,7 +50,7 @@ void p_player(move_t* res, int* rows, int N_rows, double p) {
     sticks = 1 + (double)rows[row]*rand()/RAND_MAX;
     printf("Random move\n");
     
-    // Optimal move
+  // Optimal move
   } else {
     for (int i = 0; i < N_rows; i++) {
       if ((X^rows[i]) < rows[i]) {
@@ -84,37 +75,34 @@ void s_player(move_t* res, int* rows, int N_rows, int total_sticks) {
   
   int** stats = (int**)malloc(N_rows*sizeof(int*));
   for (int i = 0; i < N_rows; i++)
-    stats[i] = (int*)malloc(rows[i]*sizeof(int));
+    stats[i] = (int*)calloc(rows[i], sizeof(int));
   
   // Simulate moves using Monte Carlo
   int i;
-  for (int k = 0; k < 10000; k++) {
-    for (i = 0; i < N_rows; i++) {
-      for (int j = 1; j <= rows[i]; j++) {
-        stats[i][j] += monte_carlo(rows, N_rows, total_sticks);
-      }
-    }
-  }
+  for (int k = 0; k < 10000; k++)
+    for (i = 0; i < N_rows; i++)
+      for (int j = 0; j < rows[i]; j++)
+        stats[i][j] += monte_carlo(rows, N_rows, total_sticks, i, j+1);
   
   printf("stats = \n");
   for (int m = 0; m < N_rows; m++) {
-      for (int j = rows[m]; j >= 1; j--) {
-        printf("%i ", stats[m][j]);
-      }
-      printf("\n");
+    for (int j = rows[m]-1; j >= 0; j--) {
+      printf("%i ", stats[m][j]);
     }
     printf("\n");
+  }
+  printf("\n");
   
   // Find the "best" move
   int row = i;
   int sticks = rows[i];
   int stats_max = 0;
   for (int i = 0; i < N_rows; i++) {
-    for (int j = 1; j <= rows[i]; j++) {
+    for (int j = 0; j < rows[i]; j++) {
       if (stats[i][j] > stats_max) {
         stats_max = stats[i][j];
         row = i;
-        sticks = j;
+        sticks = j+1;
       }
     }
   }
