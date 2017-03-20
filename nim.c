@@ -13,7 +13,7 @@ void print_board(int N_rows, int *rows) {
 
 
 int main(int argc, char *argv[]) {
-
+  
   if (argc != 3) {
     printf("Expects 2 arguments, # rows and sticks\n");
     return -1;
@@ -44,7 +44,9 @@ int main(int argc, char *argv[]) {
     printf("Player %i:s turn: \n", player);
     
     while (1) {
-      if (scanf("%i%i", &row, &pick) < 0) {
+      int ret = scanf("%i%i", &row, &pick); // cannot read strings
+      
+      if (ret <= 0) {
         printf("Illegal input: Enter numbers plz. Try again.\n");
         print_board(N_rows, rows);
         continue;
@@ -53,7 +55,7 @@ int main(int argc, char *argv[]) {
         printf("Illegal move: Rows out of bounds. Try again.\n");
         print_board(N_rows, rows);
         continue;
-      } else if (pick > 3 || pick < 1 || pick > rows[row-1]) {
+      } else if (pick < 1 || pick > rows[row-1]) {
         printf("Illegal move: Wrong number of sticks. Try again.\n");
         print_board(N_rows, rows);
         continue;
