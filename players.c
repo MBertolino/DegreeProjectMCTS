@@ -4,7 +4,7 @@
 
 
 int monte_carlo(int* rows, int N_rows, int total_sticks) {
-
+  printf("test\n");
   int win = 1;
   int* rows_temp = (int*)malloc(N_rows*sizeof(int));
   //*rows_temp = *rows;
@@ -82,11 +82,11 @@ void p_player(move_t* res, int* rows, int N_rows, double p) {
 
 // The s-player
 void s_player(move_t* res, int* rows, int N_rows, int total_sticks) {
-
-          printf("test\n"); 
+  
   int** stats = (int**)malloc(N_rows*sizeof(int*));
   for (int i = 0; i < N_rows; i++)
     stats[i] = (int*)malloc(rows[i]*sizeof(int));
+  
   // Simulate moves using Monte Carlo
   int i;
   for (i = 0; i < N_rows; i++) {
