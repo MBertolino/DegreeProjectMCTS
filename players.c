@@ -4,7 +4,7 @@
 
 
 int monte_carlo(int* rows, int N_rows, int total_sticks, int row, int sticks) {
-
+  
   int win = 1;
   int* rows_temp = (int*)malloc(N_rows*sizeof(int));
   for (int i = 0; i < N_rows; i++) {
@@ -16,6 +16,18 @@ int monte_carlo(int* rows, int N_rows, int total_sticks, int row, int sticks) {
   // Simulate the game
   while (1) {
     win = 1 - win;
+    
+    // See if a winning move is possible
+    for (int i = 0; i < N_rows; i++) {
+      if (rows_temp[i] == 0)
+        continue;
+      if (rows_temp[i] == total_sticks) {
+        free(rows_temp);
+        return win;
+      }
+      break;
+    }
+    
     do {
       row = (double)N_rows*rand()/RAND_MAX;
     } while (rows_temp[row] == 0);
@@ -78,9 +90,8 @@ void s_player(move_t* res, int* rows, int N_rows, int total_sticks) {
     stats[i] = (int*)calloc(rows[i], sizeof(int));
   
   // Simulate moves using Monte Carlo
-  int i;
   for (int k = 0; k < 10000; k++)
-    for (i = 0; i < N_rows; i++)
+    for (int i = 0; i < N_rows; i++)
       for (int j = 0; j < rows[i]; j++)
         stats[i][j] += monte_carlo(rows, N_rows, total_sticks, i, j+1);
   
@@ -94,12 +105,12 @@ void s_player(move_t* res, int* rows, int N_rows, int total_sticks) {
   printf("\n");
   
   // Find the "best" move
-  int row = i;
-  int sticks = rows[i];
+  int row = 0;
+  int sticks = 1;
   int stats_max = 0;
   for (int i = 0; i < N_rows; i++) {
     for (int j = 0; j < rows[i]; j++) {
-      if (stats[i][j] > stats_max) {
+      if (stats[i][j] >= stats_max) {
         stats_max = stats[i][j];
         row = i;
         sticks = j+1;
