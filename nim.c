@@ -38,7 +38,7 @@ int main(int argc, char* argv[]) {
   int *rows = (int*)malloc(N_rows*sizeof(int));
   int total_sticks = 0;
   for (int i = 0; i < N_rows; i++) {
-    rows[i] = 3 + i*0.5;
+    rows[i] = 3 + i*2;
     total_sticks += rows[i];
   }
   
