@@ -4,7 +4,7 @@
 #include <math.h>
 
 int N_plays;
-const double c = sqrt(2);
+const double c = 1.4;
 
 int random_move(int* rows, int N_rows, int total_sticks, int row, int sticks) {
   
@@ -56,7 +56,7 @@ int monte_carlo(tree_t* tree, int* rows, int N_rows) {
     if (rows[i] == 0)
       continue;
     if (rows[i] == total_sticks) {
-      tree->win += 1;
+      tree->wins += 1;
       tree->plays += 1;
       return 1;
     }
@@ -82,9 +82,9 @@ int monte_carlo(tree_t* tree, int* rows, int N_rows) {
     // Simulate random moves
     index = (double)total_sticks*rand()/RAND_MAX;
     int win = 1 - random_move(rows, N_rows, total_sticks, tree->children[index]->row, tree->children[index]->sticks);
-    tree->children[index]->win += 1 - win;
+    tree->children[index]->wins += 1 - win;
     tree->children[index]->plays++;
-    tree->win += win;
+    tree->wins += win;
     tree->plays++;
     return win;
   }
@@ -96,18 +96,18 @@ int monte_carlo(tree_t* tree, int* rows, int N_rows) {
     for (int i = 0; i < total_sticks; i++) {
       if (tree->children[i]->plays == 0) {
         int win = 1 - monte_carlo(tree->children[i], rows, N_rows);
-        tree->win += win;
-        tree->plays++;;
+        tree->wins += win;
+        tree->plays++;
         return win;
       }
     }
     
     // Find the child with highest ucb
     tree_t* max_child = tree->children[0];
-    double ucb_max = max_child->wins/max_child->plays + c*sqrt(log(max_child->plays)/N_plays);
+    double ucb_max = max_child->wins/max_child->plays + c*sqrt(log(N_plays)/max_child->plays);
     double ucb;
     for (int i = 1; i < total_sticks; i++) {
-      ucb = tree->children[i]->wins/tree->children[i]->plays + c*sqrt(log(tree->children[i]->plays)/N_plays);
+      ucb = tree->children[i]->wins/tree->children[i]->plays + c*sqrt(log(N_plays)/tree->children[i]->plays);
       if (ucb > ucb_max) {
         ucb = ucb_max;
         max_child = tree->children[i];
@@ -116,7 +116,7 @@ int monte_carlo(tree_t* tree, int* rows, int N_rows) {
     
     // Traverse down the tree
     int win = 1 - monte_carlo(max_child, rows, N_rows);
-    tree->win += win;
+    tree->wins += win;
     tree->plays++;
     return win;
   }
@@ -126,7 +126,7 @@ int monte_carlo(tree_t* tree, int* rows, int N_rows) {
 // Freez the treez
 void free_tree(tree_t* tree) {
   if (tree != NULL) {
-    for (int i = 0; i < (*tree)->total_sticks; i++) {
+    for (int i = 0; i < tree->total_sticks; i++) {
       free_tree(tree->children[i]);
     }
     free(tree->children);
@@ -156,11 +156,12 @@ void x_player(move_t* res, int* rows, int N_rows, int total_sticks) {
   root->wins = 0;
   root->plays = 0;
   root->total_sticks = total_sticks;
-  N_plays = 0;
   
-  N_sims = 1000;
+  N_plays = 0;
+  int N_sims = 1000;
   for (int k = 0; k < N_sims; k++) {
     monte_carlo(root, rows, N_rows);
+    N_plays++;
   }
   
   // Decide which move to make
