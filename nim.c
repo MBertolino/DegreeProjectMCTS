@@ -84,7 +84,8 @@ int main(int argc, char* argv[]) {
     // Computer
     } else {
       //p_player(res, rows, N_rows, p);
-      s_player(res, rows, N_rows, total_sticks);
+      //s_player(res, rows, N_rows, total_sticks);
+      x_player(res, rows, N_rows, total_sticks);
       row = res->row;
       sticks = res->sticks;
     }
