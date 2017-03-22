@@ -10,7 +10,7 @@
 #define C_RED    "\x1B[31m"
 #define C_GREEN  "\x1B[32m"
 
-#define OPPONENT 1 // p = 1 or s = 2
+#define opponent s // p or s
 
 void print_board(int N_rows, int *rows) {
   for (int i = 0; i < N_rows; i++) {
@@ -42,9 +42,7 @@ int main(int argc, char* argv[]) {
     total_sticks += rows[i];
   }
   
-  #if OPPONENT == 1
-    double p = 0.5;
-  #endif
+  //double p = 0.5;
   int player = 2;
   int row, sticks;
   move_t* res = (move_t*)malloc(sizeof(move_t));
@@ -85,11 +83,8 @@ int main(int argc, char* argv[]) {
     
     // Computer
     } else {
-      #if OPPONENT == 1
-        p_player(res, rows, N_rows, p);
-      #elif OPPONENT == 2
-        s_player(res, rows, N_rows, total_sticks);
-      #endif
+      //p_player(res, rows, N_rows, p);
+      s_player(res, rows, N_rows, total_sticks);
       row = res->row;
       sticks = res->sticks;
     }
