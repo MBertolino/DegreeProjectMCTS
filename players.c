@@ -1,10 +1,10 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "structs.h"
-
+#include <math.h>
 
 int N_plays;
-
+const double c = sqrt(2);
 
 int random_move(int* rows, int N_rows, int total_sticks, int row, int sticks) {
   
@@ -48,7 +48,7 @@ int random_move(int* rows, int N_rows, int total_sticks, int row, int sticks) {
 }
 
 
-void monte_carlo(tree_t* tree, int* rows, int N_rows, int total_sticks, int turn) {
+int monte_carlo(tree_t* tree, int* rows, int N_rows, int total_sticks, int turn) {
   
   // See if a winning move is possible
   for (int i = 0; i < N_rows; i++) {
@@ -79,19 +79,45 @@ void monte_carlo(tree_t* tree, int* rows, int N_rows, int total_sticks, int turn
     
     // Simulate random moves
     index = (double)total_sticks*rand()/RAND_MAX;
-    int win = random_move(rows, N_rows, total_sticks, tree->children[index]->row, tree->children[index]->sticks);
-    tree->children[index]->win += win;
-    tree->win += 1 - win;
+    int win = 1 - random_move(rows, N_rows, total_sticks, tree->children[index]->row, tree->children[index]->sticks);
+    tree->children[index]->win += 1 - win;
+    tree->children[index]->plays++;
+    tree->win += win;
+    tree->plays++;
+    return win;
   }
   
   // If this is an internal node
   else {
     
+    // Find child not yet played
+    for (int i = 0; i < total_sticks; i++) {
+      if (tree->children[i]->plays == 0) {
+        int win = 1 - monte_carlo(tree->children[i], rows, N_rows, total_sticks - tree->children[i]->sticks, 1 - turn);
+        tree->win += win;
+        tree->plays++;;
+        return win;
+      }
+    }
+    
+    // Find the child with highest ucb
+    tree_t* max_child = tree->children[0];
+    double ucb_max = max_child->wins/max_child->plays + c*sqrt(log(max_child->plays)/N_plays);
+    double ucb;
+    for (int i = 1; i < total_sticks; i++) {
+      ucb = tree->children[i]->wins/tree->children[i]->plays + c*sqrt(log(tree->children[i]->plays)/N_plays);
+      if (ucb > ucb_max) {
+        ucb = ucb_max;
+        max_child = tree->children[i];
+      }
+    }
+    
+    // Traverse down the tree
+    int win = 1 - monte_carlo(max_child, rows, N_rows, total_sticks - max_child->sticks, 1 - turn);
+    tree->win += win;
+    tree->plays++;
+    return win;
   }
-  
-  
-  // Backpropagate
-  
 }
 
 
@@ -120,7 +146,7 @@ void x_player(move_t* res, int* rows, int N_rows, int total_sticks) {
   
   N_sims = 1000;
   for (int k = 0; k < N_sims; k++) {
-    monte_carlo(...); // <- turn = 1 - turn
+    monte_carlo(root, rows, ); // <- turn = 1 - turn
   }
   
   // Decide which move to make

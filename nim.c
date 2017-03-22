@@ -31,7 +31,7 @@ int main(int argc, char* argv[]) {
   
   int N_rows = atoi(argv[1]);
   if (N_rows < 1) {
-    printf("Numbe of rows must be > 0.\n");
+    printf("Number of rows must be > 0.\n");
     return -1;
   }
   
