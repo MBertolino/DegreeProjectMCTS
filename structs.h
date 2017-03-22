@@ -13,5 +13,6 @@ typedef struct tree {
   int plays;
   int row;
   int sticks;
+  int total_sticks;
 } tree_t;
 

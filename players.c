@@ -48,7 +48,8 @@ int random_move(int* rows, int N_rows, int total_sticks, int row, int sticks) {
 }
 
 
-int monte_carlo(tree_t* tree, int* rows, int N_rows, int total_sticks, int turn) {
+int monte_carlo(tree_t* tree, int* rows, int N_rows) {
+  int total_sticks = tree->total_sticks;
   
   // See if a winning move is possible
   for (int i = 0; i < N_rows; i++) {
@@ -73,6 +74,7 @@ int monte_carlo(tree_t* tree, int* rows, int N_rows, int total_sticks, int turn)
         tree->children[index]->plays = 0;
         tree->children[index]->row = i;
         tree->children[index]->sticks = j;
+        tree->children[index]->total_sticks = total_sticks - j;
         index++;
       }
     }
@@ -93,7 +95,7 @@ int monte_carlo(tree_t* tree, int* rows, int N_rows, int total_sticks, int turn)
     // Find child not yet played
     for (int i = 0; i < total_sticks; i++) {
       if (tree->children[i]->plays == 0) {
-        int win = 1 - monte_carlo(tree->children[i], rows, N_rows, total_sticks - tree->children[i]->sticks, 1 - turn);
+        int win = 1 - monte_carlo(tree->children[i], rows, N_rows);
         tree->win += win;
         tree->plays++;;
         return win;
@@ -113,10 +115,22 @@ int monte_carlo(tree_t* tree, int* rows, int N_rows, int total_sticks, int turn)
     }
     
     // Traverse down the tree
-    int win = 1 - monte_carlo(max_child, rows, N_rows, total_sticks - max_child->sticks, 1 - turn);
+    int win = 1 - monte_carlo(max_child, rows, N_rows);
     tree->win += win;
     tree->plays++;
     return win;
+  }
+}
+
+
+// Freez the treez
+void free_tree(tree_t* tree) {
+  if (tree != NULL) {
+    for (int i = 0; i < (*tree)->total_sticks; i++) {
+      free_tree(tree->children[i]);
+    }
+    free(tree->children);
+    free(tree);
   }
 }
 
@@ -141,12 +155,12 @@ void x_player(move_t* res, int* rows, int N_rows, int total_sticks) {
   root->children = (tree_t**)malloc(total_sticks*sizeof(tree_t*));
   root->wins = 0;
   root->plays = 0;
-  int turn = 1;
+  root->total_sticks = total_sticks;
   N_plays = 0;
   
   N_sims = 1000;
   for (int k = 0; k < N_sims; k++) {
-    monte_carlo(root, rows, ); // <- turn = 1 - turn
+    monte_carlo(root, rows, N_rows);
   }
   
   // Decide which move to make
@@ -159,7 +173,7 @@ void x_player(move_t* res, int* rows, int N_rows, int total_sticks) {
   res->sticks = max_child->sticks;
   
   // Freez the treez
-  //...
+  free_tree(root);
 }
 
 
