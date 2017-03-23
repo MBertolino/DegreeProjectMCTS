@@ -10,7 +10,7 @@
 #define C_RED    "\x1B[31m"
 #define C_GREEN  "\x1B[32m"
 
-#define opponent s // p or s
+#define opponent 3 // p = 1, s = 2, x = 3
 
 void print_board(int N_rows, int *rows) {
   for (int i = 0; i < N_rows; i++) {
@@ -83,6 +83,7 @@ int main(int argc, char* argv[]) {
     
     // Computer
     } else {
+      
       //p_player(res, rows, N_rows, p);
       //s_player(res, rows, N_rows, total_sticks);
       x_player(res, rows, N_rows, total_sticks);

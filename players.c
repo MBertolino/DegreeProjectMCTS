@@ -59,28 +59,13 @@ int monte_carlo(tree_t* tree, int* rows, int N_rows) {
       tree->wins += 1;
       tree->plays += 1;
       
-      printf("Returned a winning move\n");
-      
       return 1;
     }
     break;
   }
   
-  printf("No winning moves\n");
-  
-  if (1*(tree->children == NULL) == 1) {
-    printf("tree->children is NULL\n");
-    printf("tree->wins   = %i\n", tree->wins);
-    printf("tree->plays  = %i\n", tree->plays);
-    printf("tree->row    = %i\n", tree->row);
-    printf("tree->sticks = %i\n", tree->sticks);
-    printf("tree->ts     = %i\n", tree->total_sticks);
-  }
-  
   // If this is a leaf node
   if (tree->children == NULL) {
-    
-    printf("Leaf node\n");
     
     // Allocate memory for the child nodes
     tree->children = (tree_t**)malloc(total_sticks*sizeof(tree_t*));
@@ -98,9 +83,6 @@ int monte_carlo(tree_t* tree, int* rows, int N_rows) {
       }
     }
     
-    if (index != total_sticks)
-      printf("Something is wrong with the indexing\n");
-    
     // Simulate random moves
     index = (double)total_sticks*rand()/RAND_MAX;
     int win = random_move(rows, N_rows, total_sticks, tree->children[index]->row, tree->children[index]->sticks);
@@ -109,15 +91,11 @@ int monte_carlo(tree_t* tree, int* rows, int N_rows) {
     tree->wins += win;
     tree->plays++;
     
-    printf("Returned random move\n");
-    
     return win;
   }
   
   // If this is an internal node
   else {
-    
-    printf("Internal node\n");
     
     // Find child not yet played
     for (int i = 0; i < total_sticks; i++) {
@@ -207,19 +185,18 @@ void x_player(move_t* res, int* rows, int N_rows, int total_sticks) {
   N_plays = 0;
   int N_sims = 1000;
   for (int k = 0; k < N_sims; k++) {
-    printf("\nk = %i\n", k);
     monte_carlo(root, rows, N_rows);
     N_plays++;
   }
   
   // Decide which move to make
-  tree_t* max_child = root->children[0];
+  tree_t* min_child = root->children[0];
   for (int i = 1; i < total_sticks; i++) {
-    if (max_child->plays < root->children[i]->plays)
-      max_child = root->children[i];
+    if (min_child->plays > root->children[i]->plays)
+      min_child = root->children[i];
   }
-  res->row = max_child->row;
-  res->sticks = max_child->sticks;
+  res->row = min_child->row;
+  res->sticks = min_child->sticks;
   
   // Freez the treez
   free_tree(root);
