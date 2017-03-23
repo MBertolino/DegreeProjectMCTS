@@ -63,8 +63,22 @@ int monte_carlo(tree_t* tree, int* rows, int N_rows) {
     break;
   }
   
+  printf("No winning moves\n");
+  
+  if (1*(tree->children == NULL) == 1) {
+    printf("tree->children is NULL\n");
+    printf("tree->wins   = %i\n", tree->wins);
+    printf("tree->plays  = %i\n", tree->plays);
+    printf("tree->row    = %i\n", tree->row);
+    printf("tree->sticks = %i\n", tree->sticks);
+    printf("tree->ts     = %i\n", tree->total_sticks);
+  }
+  
   // If this is a leaf node
   if (tree->children[0] == NULL) {
+    
+    printf("Leaf node\n");
+    
     int index = 0;
     for (int i = 0; i < N_rows; i++) {
       for (int j = 1; j <= rows[i]; j++) {
@@ -92,12 +106,22 @@ int monte_carlo(tree_t* tree, int* rows, int N_rows) {
   // If this is an internal node
   else {
     
+    printf("Internal node\n");
+    
     // Find child not yet played
     for (int i = 0; i < total_sticks; i++) {
       if (tree->children[i]->plays == 0) {
-        int win = 1 - monte_carlo(tree->children[i], rows, N_rows);
+        
+        int* rows_temp = (int*)malloc(N_rows*sizeof(int));
+        for (int m = 0; m < N_rows; m++)
+          rows_temp[m] = rows[m];
+        rows_temp[tree->children[i]->row] -= tree->children[i]->sticks;
+        
+        int win = 1 - monte_carlo(tree->children[i], rows_temp, N_rows);
         tree->wins += win;
         tree->plays++;
+        
+        free(rows_temp);
         return win;
       }
     }
@@ -114,10 +138,18 @@ int monte_carlo(tree_t* tree, int* rows, int N_rows) {
       }
     }
     
+    // Update the rows
+    int* rows_temp = (int*)malloc(N_rows*sizeof(int));
+    for (int m = 0; m < N_rows; m++)
+      rows_temp[m] = rows[m];
+    rows_temp[max_child->row] -= max_child->sticks;
+    
     // Traverse down the tree
-    int win = 1 - monte_carlo(max_child, rows, N_rows);
+    int win = 1 - monte_carlo(max_child, rows_temp, N_rows);
     tree->wins += win;
     tree->plays++;
+    
+    free(rows_temp);
     return win;
   }
 }
@@ -160,6 +192,7 @@ void x_player(move_t* res, int* rows, int N_rows, int total_sticks) {
   N_plays = 0;
   int N_sims = 1000;
   for (int k = 0; k < N_sims; k++) {
+    printf("\nk = %i\n", k);
     monte_carlo(root, rows, N_rows);
     N_plays++;
   }
