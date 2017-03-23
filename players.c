@@ -58,6 +58,9 @@ int monte_carlo(tree_t* tree, int* rows, int N_rows) {
     if (rows[i] == total_sticks) {
       tree->wins += 1;
       tree->plays += 1;
+      
+      printf("Returned a winning move\n");
+      
       return 1;
     }
     break;
@@ -75,15 +78,17 @@ int monte_carlo(tree_t* tree, int* rows, int N_rows) {
   }
   
   // If this is a leaf node
-  if (tree->children[0] == NULL) {
+  if (tree->children == NULL) {
     
     printf("Leaf node\n");
     
+    // Allocate memory for the child nodes
+    tree->children = (tree_t**)malloc(total_sticks*sizeof(tree_t*));
     int index = 0;
     for (int i = 0; i < N_rows; i++) {
       for (int j = 1; j <= rows[i]; j++) {
         tree->children[index] = (tree_t*)malloc(sizeof(tree_t));
-        tree->children[index]->children = (tree_t**)malloc((total_sticks-j)*sizeof(tree_t*));
+        tree->children[index]->children = NULL;
         tree->children[index]->wins = 0;
         tree->children[index]->plays = 0;
         tree->children[index]->row = i;
@@ -93,13 +98,19 @@ int monte_carlo(tree_t* tree, int* rows, int N_rows) {
       }
     }
     
+    if (index != total_sticks)
+      printf("Something is wrong with the indexing\n");
+    
     // Simulate random moves
     index = (double)total_sticks*rand()/RAND_MAX;
-    int win = 1 - random_move(rows, N_rows, total_sticks, tree->children[index]->row, tree->children[index]->sticks);
-    tree->children[index]->wins += 1 - win;
-    tree->children[index]->plays++;
+    int win = random_move(rows, N_rows, total_sticks, tree->children[index]->row, tree->children[index]->sticks);
+    //tree->children[index]->wins += 1 - win;
+    //tree->children[index]->plays++;
     tree->wins += win;
     tree->plays++;
+    
+    printf("Returned random move\n");
+    
     return win;
   }
   
@@ -128,10 +139,10 @@ int monte_carlo(tree_t* tree, int* rows, int N_rows) {
     
     // Find the child with highest ucb
     tree_t* max_child = tree->children[0];
-    double ucb_max = max_child->wins/max_child->plays + c*sqrt(log(N_plays)/max_child->plays);
+    double ucb_max = (double)max_child->wins/max_child->plays + c*sqrt(log(N_plays)/max_child->plays);
     double ucb;
     for (int i = 1; i < total_sticks; i++) {
-      ucb = tree->children[i]->wins/tree->children[i]->plays + c*sqrt(log(N_plays)/tree->children[i]->plays);
+      ucb = (double)tree->children[i]->wins/tree->children[i]->plays + c*sqrt(log(N_plays)/tree->children[i]->plays);
       if (ucb > ucb_max) {
         ucb = ucb_max;
         max_child = tree->children[i];
@@ -158,10 +169,12 @@ int monte_carlo(tree_t* tree, int* rows, int N_rows) {
 // Freez the treez
 void free_tree(tree_t* tree) {
   if (tree != NULL) {
-    for (int i = 0; i < tree->total_sticks; i++) {
-      free_tree(tree->children[i]);
+    if (tree->children != NULL) {
+      for (int i = 0; i < tree->total_sticks; i++) {
+        free_tree(tree->children[i]);
+      }
+      free(tree->children);
     }
-    free(tree->children);
     free(tree);
   }
 }
@@ -184,9 +197,11 @@ void x_player(move_t* res, int* rows, int N_rows, int total_sticks) {
   
   // Initialize
   tree_t* root = (tree_t*)malloc(sizeof(tree_t));
-  root->children = (tree_t**)malloc(total_sticks*sizeof(tree_t*));
+  root->children = NULL;
   root->wins = 0;
   root->plays = 0;
+  root->row = -1;
+  root->sticks = -1;
   root->total_sticks = total_sticks;
   
   N_plays = 0;
