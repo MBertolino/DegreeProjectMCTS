@@ -10,7 +10,8 @@
 #define C_RED    "\x1B[31m"
 #define C_GREEN  "\x1B[32m"
 
-#define OPPONENT 3 // p = 1, s = 2, x = 3
+#define PLAYER1 2 // Human = 0, p = 1, s = 2, x = 3
+#define PLAYER2 3 // p = 1, s = 2, x = 3
 
 void print_board(int N_rows, int *rows) {
   for (int i = 0; i < N_rows; i++) {
@@ -42,7 +43,9 @@ int main(int argc, char* argv[]) {
     total_sticks += rows[i];
   }
   
-  //double p = 0.5;
+  #if PLAYER1 == 1 || PLAYER2 == 1
+    double p = 0.5;
+  #endif
   int player = 2;
   int row, sticks;
   move_t* res = (move_t*)malloc(sizeof(move_t));
@@ -59,41 +62,32 @@ int main(int argc, char* argv[]) {
     else
       printf("%sPlayer %i%s:s turn: \n", C_RED, player, C_NORMAL);
     
-    // Human player
+    // Player 1
     if (player == 1) {
-      while (1) {
-        int ret = scanf("%i%i", &row, &sticks); // cannot read strings
-        row--;
-        if (ret <= 0) {
-          printf("Illegal input: Enter numbers plz. Try again.\n");
-          print_board(N_rows, rows);
-          continue;
-        }
-        if (row > N_rows-1 || row < 0) {
-          printf("Illegal move: Rows out of bounds. Try again.\n");
-          print_board(N_rows, rows);
-          continue;
-        } else if (sticks < 1 || sticks > rows[row]) {
-          printf("Illegal move: Wrong number of sticks. Try again.\n");
-          print_board(N_rows, rows);
-          continue;
-        }
-        break;
-      }
-    
-    // Computer
-    } else {
-      #if OPPONENT == 1
+      #if PLAYER1 == 0
+        h_player(res, rows, N_rows);
+      #elif PLAYER1 == 1
         p_player(res, rows, N_rows, p);
-      #elif OPPONENT == 2
+      #elif PLAYER1 == 2
         s_player(res, rows, N_rows, total_sticks);
-      #elif OPPONENT == 3
+      #elif PLAYER1 == 3
         x_player(res, rows, N_rows, total_sticks);
       #endif
-      row = res->row;
-      sticks = res->sticks;
-    }
     
+    // Player 2
+    } else {
+      #if PLAYER2 == 0
+        h_player(res, rows, N_rows);
+      #elif PLAYER2 == 1
+        p_player(res, rows, N_rows, p);
+      #elif PLAYER2 == 2
+        s_player(res, rows, N_rows, total_sticks);
+      #elif PLAYER2 == 3
+        x_player(res, rows, N_rows, total_sticks);
+      #endif
+    }
+    row = res->row;
+      sticks = res->sticks;
     rows[row] -= sticks;
     total_sticks -= sticks;
     if (total_sticks <= 0) {

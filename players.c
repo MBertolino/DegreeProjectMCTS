@@ -183,7 +183,7 @@ void x_player(move_t* res, int* rows, int N_rows, int total_sticks) {
   root->total_sticks = total_sticks;
   
   N_plays = 0;
-  int N_sims = 1000;
+  int N_sims = 10000;
   for (int k = 0; k < N_sims; k++) {
     monte_carlo(root, rows, N_rows);
     N_plays++;
@@ -297,6 +297,29 @@ void p_player(move_t* res, int* rows, int N_rows, double p) {
   res->sticks = sticks;
 }
 
+// The human player
+void h_player(move_t* res, int* rows, int N_rows) {
+  int row, sticks;
+  while (1) {
+    int ret = scanf("%i%i", &row, &sticks); // cannot read strings
+    row--;
+    if (ret <= 0) {
+      printf("Illegal input: Enter numbers plz. Try again:\n");
+      continue;
+    }
+    if (row > N_rows-1 || row < 0) {
+      printf("Illegal move: Rows out of bounds. Try again:\n");
+      continue;
+    } else if (sticks < 1 || sticks > rows[row]) {
+      printf("Illegal move: Wrong number of sticks. Try again:\n");
+      continue;
+    }
+    break;
+  }
+  
+  res->row = row;
+  res->sticks = sticks;
+}
 
 
 
