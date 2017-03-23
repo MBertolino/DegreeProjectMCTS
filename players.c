@@ -192,7 +192,7 @@ void x_player(move_t* res, int* rows, int N_rows, int total_sticks) {
   // Decide which move to make
   tree_t* min_child = root->children[0];
   for (int i = 1; i < total_sticks; i++) {
-    if (min_child->plays > root->children[i]->plays)
+    if (min_child->wins/min_child->plays > root->children[i]->wins/root->children[i]->plays)
       min_child = root->children[i];
   }
   res->row = min_child->row;
@@ -227,15 +227,6 @@ void s_player(move_t* res, int* rows, int N_rows, int total_sticks) {
     for (int i = 0; i < N_rows; i++)
       for (int j = 0; j < rows[i]; j++)
         stats[i][j] += random_move(rows, N_rows, total_sticks, i, j+1);
-  
-  printf("stats = \n");
-  for (int m = 0; m < N_rows; m++) {
-    for (int j = rows[m]-1; j >= 0; j--) {
-      printf("%i ", stats[m][j]);
-    }
-    printf("\n");
-  }
-  printf("\n");
   
   // Find the "best" move
   int row = 0;
