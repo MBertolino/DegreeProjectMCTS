@@ -277,7 +277,6 @@ void p_player(move_t* res, int* rows, int N_rows, double p) {
       row = (double)N_rows*rand()/RAND_MAX;
     } while (rows[row] == 0);
     sticks = 1 + (double)rows[row]*rand()/RAND_MAX;
-    printf("Random move\n");
     
   // Optimal move
   } else {
@@ -288,10 +287,7 @@ void p_player(move_t* res, int* rows, int N_rows, double p) {
         break;
       }
     }
-    printf("Optimal move\n");
   }
-  printf("row = %i\n", row+1);
-  printf("sticks = %i\n", sticks);
   res->row = row;
   res->sticks = sticks;
   
@@ -323,15 +319,4 @@ void h_player(move_t* res, int* rows, int N_rows) {
   
   return;
 }
-
-
-
-
-
-
-
-
-
-
-
 

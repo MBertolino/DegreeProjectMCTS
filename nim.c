@@ -15,15 +15,14 @@
 #define PLAYER2 1
 
 
+// Print the board
 void print_board(int N_rows, int *rows) {
-  
   for (int i = 0; i < N_rows; i++) {
     printf("%i (%i):\t", i+1, rows[i]);
     for (int j = 0; j < rows[i]; j++)
       printf("|");
     printf("\n");
   }
-
   return;
 }
 
@@ -55,6 +54,7 @@ int main(int argc, char* argv[]) {
   int row, sticks;
   move_t* res = (move_t*)malloc(sizeof(move_t));
   
+  // Set seed
   srand(time(NULL));
   
   while (1) {

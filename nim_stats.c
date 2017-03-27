@@ -28,38 +28,46 @@ int main(int argc, char* argv[]) {
     return -1;
   }
   
-  int player = 2;
   int row, sticks;
   move_t* res = (move_t*)malloc(sizeof(move_t));
   
+  // Set seed
   srand(time(NULL));
   
-  int N_games = 100;
-  int N_sims = 1;
-  int** wins = (int**)malloc(N_games*sizeof(int*));
-  for (int i = 0; i < N_games; i++)
-    wins[i] = (int*)malloc(N_games*sizeof(int));
+  // Progress bar
+  int prog_max = 83;
+  printf("Progress:\n");
+  for (int i = 0; i < 4; i++)
+    printf("|--------------------");
+  printf("|\n|");
   
-  for (int i = 0; i < N_games; i++) {
-    for (int j = 0; j < N_games; j++) {
-      for (int k = 0; k < N_sims; k++) {
+  int N_vals = 500;
+  int N_games = 200;
+  int** wins = (int**)malloc(N_vals*sizeof(int*));
+  for (int i = 0; i < N_vals; i++)
+    wins[i] = (int*)malloc(N_vals*sizeof(int));
+  
+  for (int i = 0; i < N_vals; i++) {
+    for (int j = 0; j < N_vals; j++) {
+      for (int k = 0; k < N_games; k++) {
         int *rows = (int*)malloc(N_rows*sizeof(int));
         int total_sticks = 0;
         for (int i = 0; i < N_rows; i++) {
           rows[i] = 3 + i*2;
           total_sticks += rows[i];
         }
-
+        
         #if PLAYER1 == 1
-          double p1 = (double)i/N_games;
+          double p1 = (double)i/N_vals;
         #endif
         #if PLAYER2 == 1
-          double p2 = (double)j/N_games;
+          double p2 = (double)j/N_vals;
         #endif
-
+        
+        int player = 2;
         while (1) {
           player = 3 - player;
-
+          
           // Player 1
           if (player == 1) {
             #if PLAYER1 == 0
@@ -71,7 +79,7 @@ int main(int argc, char* argv[]) {
             #elif PLAYER1 == 3
               x_player(res, rows, N_rows, total_sticks);
             #endif
-
+            
           // Player 2
           } else {
             #if PLAYER2 == 0
@@ -89,13 +97,35 @@ int main(int argc, char* argv[]) {
           rows[row] -= sticks;
           total_sticks -= sticks;
           if (total_sticks <= 0) {
-            wins[i][j] += player - 1;
+            wins[i][j] += 2 - player;
             break;
           }
         }
       }
     }
+    
+    // Update progress bar
+    printf("\r|");
+    int N_symbols = (int)((double)(i+1)/N_vals*prog_max);
+    for (int ip = 0; ip < N_symbols; ip++) {
+      printf("#");
+    }
+    printf("%*s| %i%% ", prog_max - N_symbols, "", (int)(100.*(i+1)/N_vals + 0.5));
+    fflush(stdout);
   }
+  printf("\n");
+  
+  // Write the statistics into a file
+  FILE* f = fopen("stats.csv", "wb");
+  for (int i = 0; i < N_vals; i++) {
+    fprintf(f, "%lf", (double)wins[i][0]/N_games);
+    for (int j = 1; j < N_vals; j++)
+      fprintf(f, ",%lf", (double)wins[i][j]/N_games);
+    if (i != N_vals - 1)
+      fprintf(f, "\n");
+  }
+  fclose(f);
+  printf("Statistics done.\n");
   
   free(res);
   return 0;
