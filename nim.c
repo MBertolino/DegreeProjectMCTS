@@ -14,12 +14,15 @@
 #define PLAYER2 3 // p = 1, s = 2, x = 3
 
 void print_board(int N_rows, int *rows) {
+  
   for (int i = 0; i < N_rows; i++) {
     printf("%i (%i):\t", i+1, rows[i]);
     for (int j = 0; j < rows[i]; j++)
       printf("|");
     printf("\n");
   }
+
+  return;
 }
 
 
