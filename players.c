@@ -143,8 +143,6 @@ int monte_carlo(tree_t* tree, int* rows, int N_rows) {
     free(rows_temp);
     return win;
   }
-  
-  return;
 }
 
 

@@ -4,14 +4,19 @@ CFLAGS = -Wall -Werror -O3 -ffast-math -march=native
 LDFLAGS = -lm 
 INCLUDES =
 RM = /bin/rm -f
-OBJS = nim.o players.o
+OBJS = players.o
 EXECUTABLE = nim
+STATS = nim_stats
+
+all: $(EXECUTABLE)
+stats: $(STATS)
 
 
-all:$(EXECUTABLE)
+$(EXECUTABLE): nim.o $(OBJS)
+	$(LD) -o $(EXECUTABLE) nim.o $(OBJS) $(LDFLAGS)
 
-$(EXECUTABLE): $(OBJS)
-	$(LD) -o $(EXECUTABLE) $(OBJS) $(LDFLAGS)
+$(STATS): nim_stats.o $(OBJS)
+	$(LD) -o $(STATS) nim_stats.o $(OBJS) $(LDFLAGS)
 
 players.o: players.c players.h structs.h
 	$(CC) $(CFLAGS) $(INCLUDES) -c players.c -std=c99
@@ -19,5 +24,8 @@ players.o: players.c players.h structs.h
 nim.o: nim.c players.c players.h structs.h
 	$(CC) $(CFLAGS) $(INCLUDES) -c nim.c -std=c99
 
+nim_stats.o: nim_stats.c players.c players.h structs.h
+	$(CC) $(CFLAGS) $(INCLUDES) -c nim_stats.c -std=c99
+
 clean:
-	$(RM) $(EXECUTABLE) *.o
+	$(RM) $(EXECUTABLE) $(STATS) *.o

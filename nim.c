@@ -10,8 +10,10 @@
 #define C_RED    "\x1B[31m"
 #define C_GREEN  "\x1B[32m"
 
-#define PLAYER1 2 // Human = 0, p = 1, s = 2, x = 3
-#define PLAYER2 3 // p = 1, s = 2, x = 3
+// Define players: Human = 0, p = 1, s = 2, x = 3
+#define PLAYER1 1
+#define PLAYER2 1
+
 
 void print_board(int N_rows, int *rows) {
   
