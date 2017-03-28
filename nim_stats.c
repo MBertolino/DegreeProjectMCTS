@@ -41,9 +41,9 @@ int main(int argc, char* argv[]) {
     printf("|--------------------");
   printf("|\n|");
   
-  int N_vals1 = 500;
+  int N_vals1 = 100;
   int N_vals2 = 1;
-  int N_games = 200;
+  int N_games = 100;
   int** wins = (int**)malloc(N_vals1*sizeof(int*));
   for (int i = 0; i < N_vals1; i++)
     wins[i] = (int*)malloc(N_vals2*sizeof(int));

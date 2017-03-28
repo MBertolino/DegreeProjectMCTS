@@ -229,8 +229,8 @@ void s_player(move_t* res, int* rows, int N_rows, int total_sticks) {
   for (int i = 0; i < N_rows; i++)
     stats[i] = (int*)calloc(rows[i], sizeof(int));
   
-  // Simulate moves using Monte Carlo
-  for (int k = 0; k < 10000; k++)
+  // Simulate moves using random simulations
+  for (int k = 0; k < 1000; k++)
     for (int i = 0; i < N_rows; i++)
       for (int j = 0; j < rows[i]; j++)
         stats[i][j] += random_move(rows, N_rows, total_sticks, i, j+1);
