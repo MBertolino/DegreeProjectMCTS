@@ -13,6 +13,13 @@
 // Define players: Human = 0, p = 1, s = 2, x = 3, r = 4
 #define PLAYER1 0
 #define PLAYER2 4
+// p-value of the p-players
+#if PLAYER1 == 1
+  double p1 = 0.5;
+#endif
+#if PLAYER2 == 1
+  double p2 = 0.5;
+#endif
 
 
 void print_board(int N_rows, int *rows);
@@ -45,14 +52,6 @@ int main(int argc, char* argv[]) {
   int player = 2;
   int row, sticks;
   move_t* res = (move_t*)malloc(sizeof(move_t));
-  
-  // p-value of the p-players
-  #if PLAYER1 == 1
-    double p1 = 0.5;
-  #endif
-  #if PLAYER2 == 1
-    double p2 = 0.5;
-  #endif
   
   // Set seed
   srand(time(NULL));
@@ -95,8 +94,10 @@ int main(int argc, char* argv[]) {
         r_player(res, rows, N_rows, total_sticks);
       #endif
     }
+    
+    // Update board
     row = res->row;
-      sticks = res->sticks;
+    sticks = res->sticks;
     rows[row] -= sticks;
     total_sticks -= sticks;
     if (total_sticks <= 0) {
@@ -105,6 +106,7 @@ int main(int argc, char* argv[]) {
     }
   }
   
+  // Free
   free(rows);
   free(res);
   return 0;

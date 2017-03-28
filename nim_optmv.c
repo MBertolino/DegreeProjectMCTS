@@ -12,6 +12,9 @@
 
 // Define players: Human = 0, p = 1, s = 2, x = 3, r = 4
 #define PLAYER 1
+#if PLAYER == 1
+  double p = 0.5;
+#endif
 
 
 int main(int argc, char* argv[]) {
@@ -65,10 +68,6 @@ int main(int argc, char* argv[]) {
       total_sticks += rows[i];
     }
     
-    #if PLAYER == 1
-      double p = 0.5;
-    #endif
-    
     int player = 1 + 2.*rand()/RAND_MAX;
     while (1) {
       player = 3 - player;
@@ -95,9 +94,10 @@ int main(int argc, char* argv[]) {
           optmv[total_sticks - 1]++;
         plays[total_sticks - 1]++;
       }
-        
+      
+      // Update board
       row = res->row;
-        sticks = res->sticks;
+      sticks = res->sticks;
       rows[row] -= sticks;
       total_sticks -= sticks;
       if (total_sticks <= 0)
@@ -134,7 +134,12 @@ int main(int argc, char* argv[]) {
   fclose(f);
   printf("Statistics done.\n");
   
+  // Free
   free(res);
+  free(res_opt);
+  free(rows);
+  free(optmv);
+  free(plays);
   return 0;
 }
 

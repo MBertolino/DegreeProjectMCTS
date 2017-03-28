@@ -244,7 +244,6 @@ void s_player(move_t* res, int* rows, int N_rows, int total_sticks) {
       }
     }
   }
-  
   res->row = row;
   res->sticks = sticks;
   

@@ -5,17 +5,18 @@ LDFLAGS = -lm
 INCLUDES =
 RM = /bin/rm -f
 OBJS = players.o
-EXECUTABLE = nim
+NIM = nim
 STATS = nim_stats
 OPT = nim_optmv
 
-all: $(EXECUTABLE)
+all:
+	@echo "Usage: make nim"
 stats: $(STATS)
 opt: $(OPT)
 
 
-$(EXECUTABLE): nim.o $(OBJS)
-	$(LD) -o $(EXECUTABLE) nim.o $(OBJS) $(LDFLAGS)
+$(NIM): nim.o $(OBJS)
+	$(LD) -o $(NIM) nim.o $(OBJS) $(LDFLAGS)
 
 $(STATS): nim_stats.o $(OBJS)
 	$(LD) -o $(STATS) nim_stats.o $(OBJS) $(LDFLAGS)
@@ -36,4 +37,4 @@ nim_optmv.o: nim_optmv.c players.c players.h structs.h
 	$(CC) $(CFLAGS) $(INCLUDES) -c nim_optmv.c -std=c99
 
 clean:
-	$(RM) $(EXECUTABLE) $(STATS) $(OPT) *.o
+	$(RM) $(NIM) $(STATS) $(OPT) *.o

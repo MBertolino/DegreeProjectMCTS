@@ -11,31 +11,23 @@
 #define C_GREEN  "\x1B[32m"
 
 // Define players: Human = 0, p = 1, s = 2, x = 3, r = 4
-#define PLAYER1 1
-#define PLAYER2 3 // <-- change this value
-#if PLAYER1 == 1
-  double p1 = (double)i/N_vals1;
-#endif
-#if PLAYER2 == 1
-  double p2 = (double)j/N_vals2;
-#endif
+#define PLAYER1 2
+#define PLAYER2 2 // <-- change this value
+
 
 int main(int argc, char* argv[]) {
   
-  // Number of input arguments
   if (argc != 2) {
     printf("Expected number of rows as input argument.\n");
     return -1;
   }
   
-  // Number of rows
   int N_rows = atoi(argv[1]);
   if (N_rows < 1) {
     printf("Number of rows must be > 0.\n");
     return -1;
   }
   
-  // Return variables from the players
   int row, sticks;
   move_t* res = (move_t*)malloc(sizeof(move_t));
   
@@ -57,19 +49,28 @@ int main(int argc, char* argv[]) {
   int** wins = (int**)malloc(N_vals1*sizeof(int*));
   for (int i = 0; i < N_vals1; i++)
     wins[i] = (int*)malloc(N_vals2*sizeof(int));
-  int *rows = (int*)malloc(N_rows*sizeof(int));
   
-  // Begin simulations
+  int** 
+  for (int i 0 0; i < total_sticks; i++) {
+    
+  
+  
   for (int i = 0; i < N_vals1; i++) {
     for (int j = 0; j < N_vals2; j++) {
       for (int k = 0; k < N_games; k++) {
-        
-        // Create the board
+        int *rows = (int*)malloc(N_rows*sizeof(int));
         int total_sticks = 0;
         for (int i = 0; i < N_rows; i++) {
           rows[i] = 3 + i*2;
           total_sticks += rows[i];
         }
+        
+        #if PLAYER1 == 1
+          double p1 = (double)i/N_vals1;
+        #endif
+        #if PLAYER2 == 1
+          double p2 = (double)j/N_vals2;
+        #endif
         
         int player = 1 + 2.*rand()/RAND_MAX;
         while (1) {
@@ -103,10 +104,8 @@ int main(int argc, char* argv[]) {
               r_player(res, rows, N_rows, total_sticks);
             #endif
           }
-          
-          // Update board
           row = res->row;
-          sticks = res->sticks;
+            sticks = res->sticks;
           rows[row] -= sticks;
           total_sticks -= sticks;
           if (total_sticks <= 0) {
@@ -150,12 +149,7 @@ int main(int argc, char* argv[]) {
   fclose(f);
   printf("Statistics done.\n");
   
-  // Free
-  free(rows);
   free(res);
-  for (int i = 0; i < N_vals1; i++)
-    free(wins[i]);
-  free(wins);
   return 0;
 }
 
