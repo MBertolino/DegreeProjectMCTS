@@ -10,9 +10,9 @@
 #define C_RED    "\x1B[31m"
 #define C_GREEN  "\x1B[32m"
 
-// Define players: Human = 0, p = 1, s = 2, x = 3
-#define PLAYER1 1
-#define PLAYER2 1
+// Define players: Human = 0, p = 1, s = 2, x = 3, r = 4
+#define PLAYER1 0
+#define PLAYER2 4
 
 
 void print_board(int N_rows, int *rows);
@@ -63,11 +63,13 @@ int main(int argc, char* argv[]) {
       #if PLAYER1 == 0
         h_player(res, rows, N_rows);
       #elif PLAYER1 == 1
-        p_player(res, rows, N_rows, p);
+        p_player(res, rows, N_rows, p, total_sticks);
       #elif PLAYER1 == 2
         s_player(res, rows, N_rows, total_sticks);
       #elif PLAYER1 == 3
         x_player(res, rows, N_rows, total_sticks);
+      #elif PLAYER1 == 4
+        r_player(res, rows, N_rows, total_sticks);
       #endif
     
     // Player 2
@@ -75,11 +77,13 @@ int main(int argc, char* argv[]) {
       #if PLAYER2 == 0
         h_player(res, rows, N_rows);
       #elif PLAYER2 == 1
-        p_player(res, rows, N_rows, p);
+        p_player(res, rows, N_rows, p, total_sticks);
       #elif PLAYER2 == 2
         s_player(res, rows, N_rows, total_sticks);
       #elif PLAYER2 == 3
         x_player(res, rows, N_rows, total_sticks);
+      #elif PLAYER2 == 4
+        r_player(res, rows, N_rows, total_sticks);
       #endif
     }
     row = res->row;

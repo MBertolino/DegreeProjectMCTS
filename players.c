@@ -261,7 +261,19 @@ void s_player(move_t* res, int* rows, int N_rows, int total_sticks) {
 
 
 // The p-player
-void p_player(move_t* res, int* rows, int N_rows, double p) {
+void p_player(move_t* res, int* rows, int N_rows, double p, int total_sticks) {
+  
+  // See if a winning move is possible
+  for (int i = 0; i < N_rows; i++) {
+    if (rows[i] == 0)
+      continue;
+    if (rows[i] == total_sticks) {
+      res->row = i;
+      res->sticks = rows[i];
+      return;
+    }
+    break;
+  }
   
   int X = 0;
   int row = 1;
@@ -321,3 +333,30 @@ void h_player(move_t* res, int* rows, int N_rows) {
   return;
 }
 
+
+// The random player
+void r_player(move_t* res, int* rows, int N_rows, int total_sticks) {
+  
+  // See if a winning move is possible
+  for (int i = 0; i < N_rows; i++) {
+    if (rows[i] == 0)
+      continue;
+    if (rows[i] == total_sticks) {
+      res->row = i;
+      res->sticks = rows[i];
+      return;
+    }
+    break;
+  }
+    
+  // Make a random move
+  int row, sticks;
+  do {
+    row = (double)N_rows*rand()/RAND_MAX;
+  } while (rows[row] == 0);
+  sticks = 1 + (double)rows[row]*rand()/RAND_MAX;
+  res->row = row;
+  res->sticks = sticks;
+  
+  return;
+}
