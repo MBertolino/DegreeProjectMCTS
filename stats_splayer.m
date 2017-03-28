@@ -2,15 +2,14 @@ clear;
 
 % Import data
 stats = csvread('../statistics/stats_splayer.csv');
-%stats_blurred = imgaussfilt(stats, 30);
-N_vals = 100;
+N_vals = length(stats);
 
 % Number of ticks
 N_ticks = 10;
 
 % Plot the heatmap
 figure;
-plot(flipud(stats), '*');
+plot(stats, '*');
 title('Win rate of player 1');
 xlabel('p2 pplayer');
 ylabel('p1 splayer');

@@ -98,7 +98,7 @@ int main(int argc, char* argv[]) {
           rows[row] -= sticks;
           total_sticks -= sticks;
           if (total_sticks <= 0) {
-            wins[i][j] += 2 - player;
+            wins[i][j] += player - 1;
             break;
           }
         }
