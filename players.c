@@ -294,6 +294,7 @@ void p_player(move_t* res, int* rows, int N_rows, double p) {
   return;
 }
 
+
 // The human player
 void h_player(move_t* res, int* rows, int N_rows) {
   
