@@ -12,7 +12,7 @@
 
 // Define players: Human = 0, p = 1, s = 2, x = 3
 #define PLAYER1 1
-#define PLAYER2 2
+#define PLAYER2 3 // <-- change this value
 
 
 int main(int argc, char* argv[]) {
@@ -117,7 +117,15 @@ int main(int argc, char* argv[]) {
   printf("\n");
   
   // Write the statistics into a file
-  FILE* f = fopen("../statistics/stats_splayer.csv", "wb");
+  #if PLAYER2 == 0
+    FILE* f = fopen("../statistics/stats_hplayer.csv", "wb");
+  #elif PLAYER2 == 1
+    FILE* f = fopen("../statistics/stats_pplayer.csv", "wb");
+  #elif PLAYER2 == 2
+    FILE* f = fopen("../statistics/stats_splayer.csv", "wb");
+  #elif PLAYER2 == 3
+    FILE* f = fopen("../statistics/stats_xplayer.csv", "wb");
+  #endif
   for (int i = 0; i < N_vals1; i++) {
     fprintf(f, "%lf", (double)wins[i][0]/N_games);
     for (int j = 1; j < N_vals2; j++)

@@ -1,9 +1,9 @@
 clear;
 
 % Import data
-stats = csvread('../statistics/stats_pplayer.csv');
+stats = 1 - csvread('../statistics/stats_pplayer.csv');
 stats_blurred = imgaussfilt(stats, 30);
-N_vals = 500;
+N_vals = size(stats, 2);
 
 % Number of ticks
 N_ticks = 10;

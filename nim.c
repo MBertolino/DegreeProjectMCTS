@@ -15,16 +15,7 @@
 #define PLAYER2 1
 
 
-// Print the board
-void print_board(int N_rows, int *rows) {
-  for (int i = 0; i < N_rows; i++) {
-    printf("%i (%i):\t", i+1, rows[i]);
-    for (int j = 0; j < rows[i]; j++)
-      printf("|");
-    printf("\n");
-  }
-  return;
-}
+void print_board(int N_rows, int *rows);
 
 
 int main(int argc, char* argv[]) {
@@ -107,5 +98,14 @@ int main(int argc, char* argv[]) {
 }
 
 
-
+// Print the board
+void print_board(int N_rows, int *rows) {
+  for (int i = 0; i < N_rows; i++) {
+    printf("%i (%i):\t", i+1, rows[i]);
+    for (int j = 0; j < rows[i]; j++)
+      printf("|");
+    printf("\n");
+  }
+  return;
+}
 
