@@ -11,8 +11,8 @@
 #define C_GREEN  "\x1B[32m"
 
 // Define players: Human = 0, p = 1, s = 2, x = 3
-#define PLAYER1 2
-#define PLAYER2 1
+#define PLAYER1 1
+#define PLAYER2 2
 
 
 int main(int argc, char* argv[]) {
@@ -41,8 +41,8 @@ int main(int argc, char* argv[]) {
     printf("|--------------------");
   printf("|\n|");
   
-  int N_vals1 = 100;
-  int N_vals2 = 1;
+  int N_vals1 = 1;
+  int N_vals2 = 100;
   int N_games = 100;
   int** wins = (int**)malloc(N_vals1*sizeof(int*));
   for (int i = 0; i < N_vals1; i++)
