@@ -17,7 +17,7 @@
 #endif
 
 // Define players: Human = 0, p = 1, s = 2, x = 3, r = 4
-#define PLAYER 1
+#define PLAYER 3
 
 // p-value of the p-players
 #if PLAYER == 1
@@ -85,9 +85,9 @@ int main(int argc, char* argv[]) {
       #elif PLAYER == 1
         p_player(res, rows, N_rows, p, total_sticks);
       #elif PLAYER == 2
-        s_player(res, rows, N_rows, total_sticks);
+        s_player(res, rows, N_rows, total_sticks, GAME);
       #elif PLAYER == 3
-        x_player(res, rows, N_rows, total_sticks);
+        x_player(res, rows, N_rows, total_sticks, GAME);
       #elif PLAYER == 4
         r_player(res, rows, N_rows, total_sticks);
       #endif

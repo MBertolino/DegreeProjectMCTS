@@ -13,12 +13,11 @@ void perturb_board(int N_rows, int* rows, int* total_sticks) {
   int row = (double)N_rows*rand()/RAND_MAX;
   rows[row]++;
   (*total_sticks)++;
-  printf("perturb row = %i\n", row + 1);
   
   return;
 }
 
-int random_move(int* rows, int N_rows, int total_sticks, int row, int sticks) {
+int random_move(int* rows, int N_rows, int total_sticks, int row, int sticks, int game) {
   
   int win = 1;
   int* rows_temp = (int*)malloc(N_rows*sizeof(int));
@@ -46,6 +45,8 @@ int random_move(int* rows, int N_rows, int total_sticks, int row, int sticks) {
     // Make random move
     do {
       row = (double)N_rows*rand()/RAND_MAX;
+      if (game == 1)
+        perturb_board(N_rows, rows_temp, &total_sticks);
     } while (rows_temp[row] == 0);
     sticks = 1 + (double)rows_temp[row]*rand()/RAND_MAX;
   
@@ -61,7 +62,7 @@ int random_move(int* rows, int N_rows, int total_sticks, int row, int sticks) {
 }
 
 
-int monte_carlo(tree_t* tree, int* rows, int N_rows) {
+int monte_carlo(tree_t* tree, int* rows, int N_rows, int game) {
   int total_sticks = tree->total_sticks;
   
   // See if a winning move is possible
@@ -97,9 +98,7 @@ int monte_carlo(tree_t* tree, int* rows, int N_rows) {
     
     // Simulate random moves
     index = (double)total_sticks*rand()/RAND_MAX;
-    int win = random_move(rows, N_rows, total_sticks, tree->children[index]->row, tree->children[index]->sticks);
-    //tree->children[index]->wins += 1 - win;
-    //tree->children[index]->plays++;
+    int win = random_move(rows, N_rows, total_sticks, tree->children[index]->row, tree->children[index]->sticks, game);
     tree->wins += win;
     tree->plays++;
     
@@ -118,7 +117,7 @@ int monte_carlo(tree_t* tree, int* rows, int N_rows) {
           rows_temp[m] = rows[m];
         rows_temp[tree->children[i]->row] -= tree->children[i]->sticks;
         
-        int win = 1 - monte_carlo(tree->children[i], rows_temp, N_rows);
+        int win = 1 - monte_carlo(tree->children[i], rows_temp, N_rows, game);
         tree->wins += win;
         tree->plays++;
         
@@ -146,7 +145,7 @@ int monte_carlo(tree_t* tree, int* rows, int N_rows) {
     rows_temp[max_child->row] -= max_child->sticks;
     
     // Traverse down the tree
-    int win = 1 - monte_carlo(max_child, rows_temp, N_rows);
+    int win = 1 - monte_carlo(max_child, rows_temp, N_rows, game);
     tree->wins += win;
     tree->plays++;
     
@@ -172,7 +171,7 @@ void free_tree(tree_t* tree) {
 
 
 // The extended s-player
-void x_player(move_t* res, int* rows, int N_rows, int total_sticks) {
+void x_player(move_t* res, int* rows, int N_rows, int total_sticks, int game) {
   
   // See if a winning move is possible
   for (int i = 0; i < N_rows; i++) {
@@ -198,7 +197,7 @@ void x_player(move_t* res, int* rows, int N_rows, int total_sticks) {
   N_plays = 0;
   int N_sims = 10000;
   for (int k = 0; k < N_sims; k++) {
-    monte_carlo(root, rows, N_rows);
+    monte_carlo(root, rows, N_rows, game);
     N_plays++;
   }
   
@@ -219,7 +218,7 @@ void x_player(move_t* res, int* rows, int N_rows, int total_sticks) {
 
 
 // The s-player
-void s_player(move_t* res, int* rows, int N_rows, int total_sticks) {
+void s_player(move_t* res, int* rows, int N_rows, int total_sticks, int game) {
   
   // See if a winning move is possible
   for (int i = 0; i < N_rows; i++) {
@@ -241,7 +240,7 @@ void s_player(move_t* res, int* rows, int N_rows, int total_sticks) {
   for (int k = 0; k < 1000; k++)
     for (int i = 0; i < N_rows; i++)
       for (int j = 0; j < rows[i]; j++)
-        stats[i][j] += random_move(rows, N_rows, total_sticks, i, j+1);
+        stats[i][j] += random_move(rows, N_rows, total_sticks, i, j+1, game);
 
   // Find the "best" move
   int row = 0;

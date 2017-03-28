@@ -17,16 +17,9 @@
 #endif
 
 // Define players: Human = 0, p = 1, s = 2, x = 3, r = 4
-#define PLAYER1 1
+#define PLAYER1 2
 #define PLAYER2 3 // <-- change this value
 
-// p-value of the p-players
-#if PLAYER1 == 1
-  double p1 = (double)i/N_vals1;
-#endif
-#if PLAYER2 == 1
-  double p2 = (double)j/N_vals2;
-#endif
 
 int main(int argc, char* argv[]) {
   
@@ -70,6 +63,15 @@ int main(int argc, char* argv[]) {
   // Begin simulations
   for (int i = 0; i < N_vals1; i++) {
     for (int j = 0; j < N_vals2; j++) {
+      
+      // p-value of the p-players
+      #if PLAYER1 == 1
+        double p1 = (double)i/N_vals1;
+      #endif
+      #if PLAYER2 == 1
+        double p2 = (double)j/N_vals2;
+      #endif
+      
       for (int k = 0; k < N_games; k++) {
         
         // Create the board
@@ -90,9 +92,9 @@ int main(int argc, char* argv[]) {
             #elif PLAYER1 == 1
               p_player(res, rows, N_rows, p1, total_sticks);
             #elif PLAYER1 == 2
-              s_player(res, rows, N_rows, total_sticks);
+              s_player(res, rows, N_rows, total_sticks, GAME);
             #elif PLAYER1 == 3
-              x_player(res, rows, N_rows, total_sticks);
+              x_player(res, rows, N_rows, total_sticks, GAME);
             #elif PLAYER2 == 4
               r_player(res, rows, N_rows, total_sticks);
             #endif
@@ -104,9 +106,9 @@ int main(int argc, char* argv[]) {
             #elif PLAYER2 == 1
               p_player(res, rows, N_rows, p2, total_sticks);
             #elif PLAYER2 == 2
-              s_player(res, rows, N_rows, total_sticks);
+              s_player(res, rows, N_rows, total_sticks, GAME);
             #elif PLAYER2 == 3
-              x_player(res, rows, N_rows, total_sticks);
+              x_player(res, rows, N_rows, total_sticks, GAME);
             #elif PLAYER2 == 4
               r_player(res, rows, N_rows, total_sticks);
             #endif

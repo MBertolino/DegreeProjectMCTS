@@ -18,7 +18,7 @@
 
 // Define players: Human = 0, p = 1, s = 2, x = 3, r = 4
 #define PLAYER1 0
-#define PLAYER2 0
+#define PLAYER2 3
 
 // p-value of the p-players
 #if PLAYER1 == 1
@@ -30,7 +30,7 @@
 
 
 void print_board(int N_rows, int* rows);
-void perturb_board(int N_rows, int* rows, int* total_sticks);
+
 
 int main(int argc, char* argv[]) {
   
@@ -80,9 +80,9 @@ int main(int argc, char* argv[]) {
       #elif PLAYER1 == 1
         p_player(res, rows, N_rows, p1, total_sticks);
       #elif PLAYER1 == 2
-        s_player(res, rows, N_rows, total_sticks);
+        s_player(res, rows, N_rows, total_sticks, GAME);
       #elif PLAYER1 == 3
-        x_player(res, rows, N_rows, total_sticks);
+        x_player(res, rows, N_rows, total_sticks, GAME);
       #elif PLAYER1 == 4
         r_player(res, rows, N_rows, total_sticks);
       #endif
@@ -94,9 +94,9 @@ int main(int argc, char* argv[]) {
       #elif PLAYER2 == 1
         p_player(res, rows, N_rows, p2, total_sticks);
       #elif PLAYER2 == 2
-        s_player(res, rows, N_rows, total_sticks);
+        s_player(res, rows, N_rows, total_sticks, GAME);
       #elif PLAYER2 == 3
-        x_player(res, rows, N_rows, total_sticks);
+        x_player(res, rows, N_rows, total_sticks, GAME);
       #elif PLAYER2 == 4
         r_player(res, rows, N_rows, total_sticks);
       #endif
