@@ -64,7 +64,7 @@ int main(int argc, char* argv[]) {
           double p2 = (double)j/N_vals;
         #endif
         
-        int player = 2;
+        int player = 1 + 2.*rand()/RAND_MAX;
         while (1) {
           player = 3 - player;
           
