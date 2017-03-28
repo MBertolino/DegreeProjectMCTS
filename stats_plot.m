@@ -1,7 +1,7 @@
 clear;
 
 % Import data
-stats = csvread('../statistics/stats_rplayer.csv');
+stats = csvread('../statistics/stats_xplayer.csv');
 N_vals = length(stats);
 
 % Plot

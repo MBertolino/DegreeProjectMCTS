@@ -195,9 +195,10 @@ void x_player(move_t* res, int* rows, int N_rows, int total_sticks) {
   }
   
   // Decide which move to make
+  // (Choose the child so that the opponent has the lowest chance of winning)
   tree_t* min_child = root->children[0];
   for (int i = 1; i < total_sticks; i++) {
-    if (min_child->wins/min_child->plays > root->children[i]->wins/root->children[i]->plays)
+    if (min_child->plays > root->children[i]->plays)
       min_child = root->children[i];
   }
   res->row = min_child->row;

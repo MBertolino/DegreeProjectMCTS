@@ -12,7 +12,7 @@
 
 // Define players: Human = 0, p = 1, s = 2, x = 3, r = 4
 #define PLAYER1 1
-#define PLAYER2 4 // <-- change this value
+#define PLAYER2 3 // <-- change this value
 
 
 int main(int argc, char* argv[]) {
