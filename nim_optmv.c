@@ -64,11 +64,11 @@ int main(int argc, char* argv[]) {
       rows[i] = 3 + i*2;
       total_sticks += rows[i];
     }
-
+    
     #if PLAYER == 1
       double p = 0.5;
     #endif
-
+    
     int player = 1 + 2.*rand()/RAND_MAX;
     while (1) {
       player = 3 - player;
@@ -87,10 +87,15 @@ int main(int argc, char* argv[]) {
       
       // Optimal move?
       p_player(res_opt, rows, N_rows, 1, total_sticks);
-      if (res->row == res_opt->row && res->sticks == res_opt->sticks)
-        optmv[total_sticks - 1]++;
-      plays[total_sticks - 1]++;
-      
+      int X = 0;
+      for (int i = 0; i < N_rows; i++)
+        X ^= rows[i];
+      if (X != 0) {
+        if (res->row == res_opt->row && res->sticks == res_opt->sticks)
+          optmv[total_sticks - 1]++;
+        plays[total_sticks - 1]++;
+      }
+        
       row = res->row;
         sticks = res->sticks;
       rows[row] -= sticks;
