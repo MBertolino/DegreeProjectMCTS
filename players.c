@@ -50,7 +50,6 @@ int random_move(int* rows, int N_rows, int total_sticks, int row, int sticks) {
 
 
 int monte_carlo(tree_t* tree, int* rows, int N_rows) {
-  
   int total_sticks = tree->total_sticks;
   
   // See if a winning move is possible
@@ -60,7 +59,6 @@ int monte_carlo(tree_t* tree, int* rows, int N_rows) {
     if (rows[i] == total_sticks) {
       tree->wins += 1;
       tree->plays += 1;
-      
       return 1;
     }
     break;
@@ -146,9 +144,8 @@ int monte_carlo(tree_t* tree, int* rows, int N_rows) {
 }
 
 
-// Freez the treez
+// Free a tree
 void free_tree(tree_t* tree) {
-  
   if (tree != NULL) {
     if (tree->children != NULL) {
       for (int i = 0; i < tree->total_sticks; i++) {
@@ -158,7 +155,6 @@ void free_tree(tree_t* tree) {
     }
     free(tree);
   }
-  
   return;
 }
 
@@ -204,9 +200,8 @@ void x_player(move_t* res, int* rows, int N_rows, int total_sticks) {
   res->row = min_child->row;
   res->sticks = min_child->sticks;
   
-  // Freez the treez
+  // Free and return
   free_tree(root);
-  
   return;
 }
 
@@ -310,8 +305,8 @@ void p_player(move_t* res, int* rows, int N_rows, double p, int total_sticks) {
 
 // The human player
 void h_player(move_t* res, int* rows, int N_rows) {
-  
   int row, sticks;
+  
   while (1) {
     int ret = scanf("%i%i", &row, &sticks); // cannot read strings
     row--;
@@ -361,3 +356,4 @@ void r_player(move_t* res, int* rows, int N_rows, int total_sticks) {
   
   return;
 }
+

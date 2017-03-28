@@ -20,17 +20,20 @@ void print_board(int N_rows, int *rows);
 
 int main(int argc, char* argv[]) {
   
+  // Number of input arguments
   if (argc != 2) {
     printf("Expected number of rows as input argument.\n");
     return -1;
   }
   
+  // Number of rows
   int N_rows = atoi(argv[1]);
   if (N_rows < 1) {
     printf("Number of rows must be > 0.\n");
     return -1;
   }
   
+  // Create the board
   int *rows = (int*)malloc(N_rows*sizeof(int));
   int total_sticks = 0;
   for (int i = 0; i < N_rows; i++) {
@@ -38,12 +41,18 @@ int main(int argc, char* argv[]) {
     total_sticks += rows[i];
   }
   
-  #if PLAYER1 == 1 || PLAYER2 == 1
-    double p = 0.5;
-  #endif
+  // Return variables from the players
   int player = 2;
   int row, sticks;
   move_t* res = (move_t*)malloc(sizeof(move_t));
+  
+  // p-value of the p-players
+  #if PLAYER1 == 1
+    double p1 = 0.5;
+  #endif
+  #if PLAYER2 == 1
+    double p2 = 0.5;
+  #endif
   
   // Set seed
   srand(time(NULL));
@@ -63,7 +72,7 @@ int main(int argc, char* argv[]) {
       #if PLAYER1 == 0
         h_player(res, rows, N_rows);
       #elif PLAYER1 == 1
-        p_player(res, rows, N_rows, p, total_sticks);
+        p_player(res, rows, N_rows, p1, total_sticks);
       #elif PLAYER1 == 2
         s_player(res, rows, N_rows, total_sticks);
       #elif PLAYER1 == 3
@@ -77,7 +86,7 @@ int main(int argc, char* argv[]) {
       #if PLAYER2 == 0
         h_player(res, rows, N_rows);
       #elif PLAYER2 == 1
-        p_player(res, rows, N_rows, p, total_sticks);
+        p_player(res, rows, N_rows, p2, total_sticks);
       #elif PLAYER2 == 2
         s_player(res, rows, N_rows, total_sticks);
       #elif PLAYER2 == 3
@@ -94,9 +103,9 @@ int main(int argc, char* argv[]) {
       printf("\nPlayer %i wins!\n", player);
       break;
     }
-    
   }
   
+  free(rows);
   free(res);
   return 0;
 }

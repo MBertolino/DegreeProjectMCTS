@@ -17,17 +17,20 @@
 
 int main(int argc, char* argv[]) {
   
+  // Number of input arguments
   if (argc != 2) {
     printf("Expected number of rows as input argument.\n");
     return -1;
   }
   
+  // Number of rows
   int N_rows = atoi(argv[1]);
   if (N_rows < 1) {
     printf("Number of rows must be > 0.\n");
     return -1;
   }
   
+  // Return variables from the players
   int row, sticks;
   move_t* res = (move_t*)malloc(sizeof(move_t));
   
@@ -49,11 +52,14 @@ int main(int argc, char* argv[]) {
   int** wins = (int**)malloc(N_vals1*sizeof(int*));
   for (int i = 0; i < N_vals1; i++)
     wins[i] = (int*)malloc(N_vals2*sizeof(int));
+  int *rows = (int*)malloc(N_rows*sizeof(int));
   
+  // Begin simulations
   for (int i = 0; i < N_vals1; i++) {
     for (int j = 0; j < N_vals2; j++) {
       for (int k = 0; k < N_games; k++) {
-        int *rows = (int*)malloc(N_rows*sizeof(int));
+        
+        // Create the board
         int total_sticks = 0;
         for (int i = 0; i < N_rows; i++) {
           rows[i] = 3 + i*2;
@@ -144,7 +150,11 @@ int main(int argc, char* argv[]) {
   fclose(f);
   printf("Statistics done.\n");
   
+  free(rows);
   free(res);
+  for (int i = 0; i < N_vals1; i++)
+    free(wins[i]);
+  free(wins);
   return 0;
 }
 
