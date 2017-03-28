@@ -113,6 +113,9 @@ int main(int argc, char* argv[]) {
             wins[i][j] += player - 1;
             break;
           }
+          
+          // Randomly perturb board
+          
         }
       }
     }

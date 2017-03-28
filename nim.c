@@ -104,6 +104,10 @@ int main(int argc, char* argv[]) {
       printf("\nPlayer %i wins!\n", player);
       break;
     }
+    
+    // Randomly perturb board
+    
+    
   }
   
   // Free

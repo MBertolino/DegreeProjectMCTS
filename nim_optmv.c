@@ -104,6 +104,9 @@ int main(int argc, char* argv[]) {
         break;
     }
     
+    // Randomly perturb board
+    
+    
     // Update progress bar
     printf("\r|");
     int N_symbols = (int)((double)(k+1)/N_games*prog_max);
