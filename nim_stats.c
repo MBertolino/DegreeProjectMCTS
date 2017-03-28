@@ -11,7 +11,7 @@
 #define C_GREEN  "\x1B[32m"
 
 // Define players: Human = 0, p = 1, s = 2, x = 3
-#define PLAYER1 1
+#define PLAYER1 2
 #define PLAYER2 1
 
 
@@ -41,14 +41,15 @@ int main(int argc, char* argv[]) {
     printf("|--------------------");
   printf("|\n|");
   
-  int N_vals = 500;
+  int N_vals1 = 500;
+  int N_vals2 = 1;
   int N_games = 200;
-  int** wins = (int**)malloc(N_vals*sizeof(int*));
-  for (int i = 0; i < N_vals; i++)
-    wins[i] = (int*)malloc(N_vals*sizeof(int));
+  int** wins = (int**)malloc(N_vals1*sizeof(int*));
+  for (int i = 0; i < N_vals1; i++)
+    wins[i] = (int*)malloc(N_vals2*sizeof(int));
   
-  for (int i = 0; i < N_vals; i++) {
-    for (int j = 0; j < N_vals; j++) {
+  for (int i = 0; i < N_vals1; i++) {
+    for (int j = 0; j < N_vals2; j++) {
       for (int k = 0; k < N_games; k++) {
         int *rows = (int*)malloc(N_rows*sizeof(int));
         int total_sticks = 0;
@@ -58,10 +59,10 @@ int main(int argc, char* argv[]) {
         }
         
         #if PLAYER1 == 1
-          double p1 = (double)i/N_vals;
+          double p1 = (double)i/N_vals1;
         #endif
         #if PLAYER2 == 1
-          double p2 = (double)j/N_vals;
+          double p2 = (double)j/N_vals2;
         #endif
         
         int player = 1 + 2.*rand()/RAND_MAX;
@@ -106,22 +107,22 @@ int main(int argc, char* argv[]) {
     
     // Update progress bar
     printf("\r|");
-    int N_symbols = (int)((double)(i+1)/N_vals*prog_max);
+    int N_symbols = (int)((double)(i+1)/N_vals1*prog_max);
     for (int ip = 0; ip < N_symbols; ip++) {
       printf("#");
     }
-    printf("%*s| %i%% ", prog_max - N_symbols, "", (int)(100.*(i+1)/N_vals + 0.5));
+    printf("%*s| %i%% ", prog_max - N_symbols, "", (int)(100.*(i+1)/N_vals1 + 0.5));
     fflush(stdout);
   }
   printf("\n");
   
   // Write the statistics into a file
-  FILE* f = fopen("stats.csv", "wb");
-  for (int i = 0; i < N_vals; i++) {
+  FILE* f = fopen("../statistics/stats_splayer.csv", "wb");
+  for (int i = 0; i < N_vals1; i++) {
     fprintf(f, "%lf", (double)wins[i][0]/N_games);
-    for (int j = 1; j < N_vals; j++)
+    for (int j = 1; j < N_vals2; j++)
       fprintf(f, ",%lf", (double)wins[i][j]/N_games);
-    if (i != N_vals - 1)
+    if (i != N_vals1 - 1)
       fprintf(f, "\n");
   }
   fclose(f);
