@@ -3,15 +3,23 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
-#include <unistd.h>
 #include "players.h"
 
+// Define colors
 #define C_NORMAL "\x1B[0m"
 #define C_RED    "\x1B[31m"
 #define C_GREEN  "\x1B[32m"
 
+// Choose which game to play: 0 = normal, 1 = perturbed
+#define GAME 1
+#if GAME == 1
+  double perturb = 0.5;
+#endif
+
 // Define players: Human = 0, p = 1, s = 2, x = 3, r = 4
 #define PLAYER 1
+
+// p-value of the p-players
 #if PLAYER == 1
   double p = 0.5;
 #endif

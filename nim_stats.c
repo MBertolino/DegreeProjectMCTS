@@ -3,16 +3,24 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
-#include <unistd.h>
 #include "players.h"
 
+// Define colors
 #define C_NORMAL "\x1B[0m"
 #define C_RED    "\x1B[31m"
 #define C_GREEN  "\x1B[32m"
 
+// Choose which game to play: 0 = normal, 1 = perturbed
+#define GAME 1
+#if GAME == 1
+  double perturb = 0.5;
+#endif
+
 // Define players: Human = 0, p = 1, s = 2, x = 3, r = 4
 #define PLAYER1 1
 #define PLAYER2 3 // <-- change this value
+
+// p-value of the p-players
 #if PLAYER1 == 1
   double p1 = (double)i/N_vals1;
 #endif
@@ -115,7 +123,11 @@ int main(int argc, char* argv[]) {
           }
           
           // Randomly perturb board
-          
+          #if GAME == 1
+            if ((double)rand()/RAND_MAX < perturb) {
+              perturb_board(N_rows, rows, &total_sticks);
+            }
+          #endif
         }
       }
     }

@@ -3,16 +3,23 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
-#include <unistd.h>
 #include "players.h"
 
+// Define colors
 #define C_NORMAL "\x1B[0m"
 #define C_RED    "\x1B[31m"
 #define C_GREEN  "\x1B[32m"
 
+// Choose which game to play: 0 = normal, 1 = perturbed
+#define GAME 1
+#if GAME == 1
+  double perturb = 0.5;
+#endif
+
 // Define players: Human = 0, p = 1, s = 2, x = 3, r = 4
 #define PLAYER1 0
-#define PLAYER2 4
+#define PLAYER2 0
+
 // p-value of the p-players
 #if PLAYER1 == 1
   double p1 = 0.5;
@@ -22,8 +29,8 @@
 #endif
 
 
-void print_board(int N_rows, int *rows);
-
+void print_board(int N_rows, int* rows);
+void perturb_board(int N_rows, int* rows, int* total_sticks);
 
 int main(int argc, char* argv[]) {
   
@@ -106,8 +113,11 @@ int main(int argc, char* argv[]) {
     }
     
     // Randomly perturb board
-    
-    
+    #if GAME == 1
+      if ((double)rand()/RAND_MAX < perturb) {
+        perturb_board(N_rows, rows, &total_sticks);
+      }
+    #endif
   }
   
   // Free
@@ -116,9 +126,10 @@ int main(int argc, char* argv[]) {
   return 0;
 }
 
-
+  
 // Print the board
-void print_board(int N_rows, int *rows) {
+void print_board(int N_rows, int* rows) {
+  
   for (int i = 0; i < N_rows; i++) {
     printf("%i (%i):\t", i+1, rows[i]);
     for (int j = 0; j < rows[i]; j++)

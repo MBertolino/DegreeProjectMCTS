@@ -7,6 +7,17 @@ int N_plays;
 const double c = 1.4;
 
 
+// Randomly perturb the board (Ska kanske läggas nån annanstans)
+void perturb_board(int N_rows, int* rows, int* total_sticks) {
+
+  int row = (double)N_rows*rand()/RAND_MAX;
+  rows[row]++;
+  (*total_sticks)++;
+  printf("perturb row = %i\n", row + 1);
+  
+  return;
+}
+
 int random_move(int* rows, int N_rows, int total_sticks, int row, int sticks) {
   
   int win = 1;
@@ -32,6 +43,7 @@ int random_move(int* rows, int N_rows, int total_sticks, int row, int sticks) {
       break;
     }
     
+    // Make random move
     do {
       row = (double)N_rows*rand()/RAND_MAX;
     } while (rows_temp[row] == 0);
@@ -230,7 +242,7 @@ void s_player(move_t* res, int* rows, int N_rows, int total_sticks) {
     for (int i = 0; i < N_rows; i++)
       for (int j = 0; j < rows[i]; j++)
         stats[i][j] += random_move(rows, N_rows, total_sticks, i, j+1);
-  
+
   // Find the "best" move
   int row = 0;
   int sticks = 1;
