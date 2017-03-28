@@ -40,6 +40,8 @@ int main(int argc, char* argv[]) {
   for (int i = 0; i < 4; i++)
     printf("|--------------------");
   printf("|\n|");
+  printf("%*s| %i%% ", prog_max, "", 0);
+  fflush(stdout);
   
   int N_vals1 = 100;
   int N_vals2 = 1;
