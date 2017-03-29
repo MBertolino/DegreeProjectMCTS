@@ -11,7 +11,7 @@
 #define C_GREEN  "\x1B[32m"
 
 // Choose which game to play: 0 = normal, (0 1] = perturbed
-#define PERTURB 1
+#define PERTURB 50
 
 // Define players: Human = 0, p = 1, s = 2, x = 3, r = 4
 #define PLAYER 3

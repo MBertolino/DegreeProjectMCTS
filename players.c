@@ -10,7 +10,7 @@ const double c = 1.4;
 // Randomly perturb the board (Ska kanske läggas nån annanstans)
 void perturb_board(int N_rows, int* rows, int* total_sticks, int perturb) {
   
-  if ((double)rand()/RAND_MAX < perturb) {  
+  if ((double)rand()/RAND_MAX < perturb/100.) {  
     int row = (double)N_rows*rand()/RAND_MAX;
     rows[row]++;
     (*total_sticks)++;    
