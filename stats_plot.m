@@ -1,10 +1,10 @@
 clear;
 
 % Import data
-stats = csvread('../statistics/optmv_pplayer.csv');
+stats = csvread('../statistics/stats_xplayer.csv');
 N_vals = length(stats);
 
-%{
+%
 % Plot
 figure;
 x_vals = linspace(0, 1, N_vals);
@@ -14,7 +14,7 @@ xlabel('p-value');
 ylabel('win rate');
 %}
 
-%
+%{
 % Plot
 figure;
 plot(stats, '*-b');
