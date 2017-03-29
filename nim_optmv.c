@@ -11,7 +11,7 @@
 #define C_GREEN  "\x1B[32m"
 
 // Choose which game to play: 0 = normal, (0 1] = perturbed
-#define PERTURB 50
+double perturb = 0.5;
 
 // Define players: Human = 0, p = 1, s = 2, x = 3, r = 4
 #define PLAYER 3
@@ -82,9 +82,9 @@ int main(int argc, char* argv[]) {
       #elif PLAYER == 1
         p_player(res, rows, N_rows, p, total_sticks);
       #elif PLAYER == 2
-        s_player(res, rows, N_rows, total_sticks, PERTURB);
+        s_player(res, rows, N_rows, total_sticks, perturb);
       #elif PLAYER == 3
-        x_player(res, rows, N_rows, total_sticks, PERTURB);
+        x_player(res, rows, N_rows, total_sticks, perturb);
       #elif PLAYER == 4
         r_player(res, rows, N_rows, total_sticks);
       #endif
@@ -110,11 +110,7 @@ int main(int argc, char* argv[]) {
     }
     
     // Randomly perturb board
-    #if PERTURB != 0
-      if ((double)rand()/RAND_MAX < PERTURB) {
-        perturb_board(N_rows, rows, &total_sticks);
-      }
-    #endif
+    perturb_board(N_rows, rows, &total_sticks, perturb);
     
     // Update progress bar
     printf("\r|");

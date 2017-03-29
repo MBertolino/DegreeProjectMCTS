@@ -8,19 +8,19 @@ const double c = 1.4;
 
 
 // Randomly perturb the board (Ska kanske läggas nån annanstans)
-void perturb_board(int N_rows, int* rows, int* total_sticks, int perturb) {
-  
-  if ((double)rand()/RAND_MAX < perturb/100.) {  
+void perturb_board(int N_rows, int* rows, int* total_sticks, double perturb) {
+  if ((double)rand()/RAND_MAX < perturb) {
     int row = (double)N_rows*rand()/RAND_MAX;
     rows[row]++;
     (*total_sticks)++;    
   }
-    
+  
   return;
 }
 
-int random_move(int* rows, int N_rows, int total_sticks, int row, int sticks, int perturb) {
-  
+
+int random_move(int* rows, int N_rows, int total_sticks, int row, int sticks, double perturb) {
+
   int win = 1;
   int* rows_temp = (int*)malloc(N_rows*sizeof(int));
   for (int i = 0; i < N_rows; i++) {
@@ -29,7 +29,7 @@ int random_move(int* rows, int N_rows, int total_sticks, int row, int sticks, in
   rows_temp[row] -= sticks;
   total_sticks -= sticks;
   
-  // Simulate the perturb
+  // Simulate the game
   while (1) {
     win = 1 - win;
     
@@ -47,8 +47,6 @@ int random_move(int* rows, int N_rows, int total_sticks, int row, int sticks, in
     // Make random move
     do {
       row = (double)N_rows*rand()/RAND_MAX;
-      if (perturb == 1)
-        perturb_board(N_rows, rows_temp, &total_sticks, perturb);
     } while (rows_temp[row] == 0);
     sticks = 1 + (double)rows_temp[row]*rand()/RAND_MAX;
   
@@ -57,6 +55,9 @@ int random_move(int* rows, int N_rows, int total_sticks, int row, int sticks, in
     if (total_sticks <= 0) {
       break;
     }
+    
+    // Randomly perturb board
+    perturb_board(N_rows, rows_temp, &total_sticks, perturb);
   }
   
   free(rows_temp);
@@ -64,7 +65,7 @@ int random_move(int* rows, int N_rows, int total_sticks, int row, int sticks, in
 }
 
 
-int monte_carlo(tree_t* tree, int* rows, int N_rows, int perturb) {
+int monte_carlo(tree_t* tree, int* rows, int N_rows, double perturb) {
   int total_sticks = tree->total_sticks;
   
   // See if a winning move is possible
@@ -173,7 +174,7 @@ void free_tree(tree_t* tree) {
 
 
 // The extended s-player
-void x_player(move_t* res, int* rows, int N_rows, int total_sticks, int perturb) {
+void x_player(move_t* res, int* rows, int N_rows, int total_sticks, double perturb) {
   
   // See if a winning move is possible
   for (int i = 0; i < N_rows; i++) {
@@ -220,7 +221,7 @@ void x_player(move_t* res, int* rows, int N_rows, int total_sticks, int perturb)
 
 
 // The s-player
-void s_player(move_t* res, int* rows, int N_rows, int total_sticks, int perturb) {
+void s_player(move_t* res, int* rows, int N_rows, int total_sticks, double perturb) {
   
   // See if a winning move is possible
   for (int i = 0; i < N_rows; i++) {
