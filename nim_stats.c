@@ -15,7 +15,7 @@ double perturb = 1;
 
 // Define players: Human = 0, p = 1, s = 2, x = 3, r = 4
 #define PLAYER1 1
-#define PLAYER2 2 // <-- change this value
+#define PLAYER2 1 // <-- change this value
 
 
 int main(int argc, char* argv[]) {
@@ -49,8 +49,8 @@ int main(int argc, char* argv[]) {
   printf("%*s| %i%% ", prog_max, "", 0);
   fflush(stdout);
   
-  int N_vals1 = 40;
-  int N_vals2 = 1;
+  int N_vals1 = 500;
+  int N_vals2 = 500;
   int N_games = 200;
   int** wins = (int**)malloc(N_vals1*sizeof(int*));
   for (int i = 0; i < N_vals1; i++)
@@ -142,7 +142,7 @@ int main(int argc, char* argv[]) {
   #if PLAYER2 == 0
     FILE* f = fopen("../statistics/stats_hplayer.csv", "wb");
   #elif PLAYER2 == 1
-    FILE* f = fopen("../statistics/stats_pplayer.csv", "wb");
+    FILE* f = fopen("../statistics/stats_pplayer_1.csv", "wb");
   #elif PLAYER2 == 2
     FILE* f = fopen("../statistics/stats_splayer.csv", "wb");
   #elif PLAYER2 == 3
