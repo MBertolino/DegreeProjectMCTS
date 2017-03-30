@@ -11,11 +11,11 @@
 #define C_GREEN  "\x1B[32m"
 
 // Choose which game to play: 0 = normal, (0 1] = perturbed
-double perturb = 0.5;
+double perturb = 0;
 
 // Define players: Human = 0, p = 1, s = 2, x = 3, r = 4
 #define PLAYER1 0
-#define PLAYER2 0
+#define PLAYER2 3
 
 // p-value of the p-players
 #if PLAYER1 == 1

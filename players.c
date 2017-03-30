@@ -111,29 +111,19 @@ int monte_carlo(tree_t* tree, int* rows, int N_rows, double perturb) {
   // If this is an internal node
   else {
     
-    // Find child not yet played
-    for (int i = 0; i < total_sticks; i++) {
-      if (tree->children[i]->plays == 0) {
-        
-        int* rows_temp = (int*)malloc(N_rows*sizeof(int));
-        for (int m = 0; m < N_rows; m++)
-          rows_temp[m] = rows[m];
-        rows_temp[tree->children[i]->row] -= tree->children[i]->sticks;
-        
-        int win = 1 - monte_carlo(tree->children[i], rows_temp, N_rows, perturb);
-        tree->wins += win;
-        tree->plays++;
-        
-        free(rows_temp);
-        return win;
-      }
-    }
-    
     // Find the child with highest ucb
     tree_t* max_child = tree->children[0];
     double ucb_max = (double)max_child->wins/max_child->plays + c*sqrt(log(N_plays)/max_child->plays);
     double ucb;
     for (int i = 1; i < total_sticks; i++) {
+      
+      // If no plays has been made
+      if (tree->children[i]->plays == 0) {
+        max_child = tree->children[i];
+        break;
+      }
+      
+      // Compute ucb
       ucb = (double)tree->children[i]->wins/tree->children[i]->plays + c*sqrt(log(N_plays)/tree->children[i]->plays);
       if (ucb > ucb_max) {
         ucb = ucb_max;
