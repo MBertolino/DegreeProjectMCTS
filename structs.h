@@ -1,18 +1,20 @@
-
 // Return struct
 typedef struct move {
   int row;
   int sticks;
 } move_t;
 
-
 // Tree struct
 typedef struct tree {
-  struct tree** children;
+  struct cell** cell;
   int wins;
   int plays;
+} tree_t;
+
+// Cell struct
+typedef struct cell {
+  struct tree** children;
   int row;
   int sticks;
   int total_sticks;
-} tree_t;
-
+} cell_t;
