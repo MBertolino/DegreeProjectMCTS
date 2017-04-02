@@ -32,7 +32,6 @@ int random_move(int* rows, int N_rows, int total_sticks, int row, int sticks, do
   // Simulate the game
   while (1) {
     win = 1 - win;
-    
     // See if a winning move is possible
     for (int i = 0; i < N_rows; i++) {
       if (rows_temp[i] == 0)
@@ -68,30 +67,28 @@ int random_move(int* rows, int N_rows, int total_sticks, int row, int sticks, do
 int monte_carlo(tree_t* tree, int* rows, int N_rows, int total_sticks, double perturb, int row_p) {
   
   int* rows_temp = (int*)malloc(N_rows*sizeof(int));
-    for (int m = 0; m < N_rows; m++)
-      rows_temp[m] = rows[m];
-  
-  if (row_p > 0) {
-    // Count for perturbation
-    total_sticks++;
-    rows_temp[row_p]++;
-  }
+  for (int m = 0; m < N_rows; m++)
+    rows_temp[m] = rows[m];
 
   // Secure that array of cells exists
   if (tree->cell == NULL) {
     tree->cell = (cell_t**)malloc((N_rows+1)*sizeof(cell_t*));
     for (int i = 0; i <= N_rows; i++) {
       tree->cell[i] = (cell_t*)malloc(sizeof(cell_t));
-      tree->cell[i]->total_sticks = total_sticks;
+      tree->cell[i]->total_sticks = total_sticks + 1;
     }
     tree->cell[0]->total_sticks--;
+   
+    //rows_temp[row_p]++;
+    //if (row_p == 0)
+    //  rows_temp[row_p]--;
   }
   
   // See if winning move is possible
   for (int i = 0; i < N_rows; i++) {
     if (rows_temp[i] == 0)
       continue;
-    if (rows_temp[i] == total_sticks) {
+    if (rows_temp[i] == tree->cell[i]->total_sticks) {
       tree->wins += 1;
       tree->plays += 1;
       return 1;
@@ -99,8 +96,16 @@ int monte_carlo(tree_t* tree, int* rows, int N_rows, int total_sticks, double pe
     break;
   }
   
+  // Control total_sticks
+  if (total_sticks + 1 != tree->cell[row_p]->total_sticks && row_p > 0) {
+    printf("tf = %i, ctf[%i] = %i, sum = %i\n", total_sticks, row_p, tree->cell[row_p]->total_sticks, rows_temp[0]+rows_temp[1]+rows_temp[2]+rows_temp[3]);
+  } else if (total_sticks != tree->cell[0]->total_sticks) {
+    printf("tf = %i, ctf[%i] = %i, sum = %i\n", total_sticks, row_p, tree->cell[row_p]->total_sticks, rows_temp[0]+rows_temp[1]+rows_temp[2]+rows_temp[3]);
+  }
+  
   // If this is a leaf cell
   if (tree->cell[row_p]->children == NULL) {
+    printf("L\n");
     // Allocate memory for the child nodes
     tree->cell[row_p]->children = (tree_t**)malloc(total_sticks*sizeof(tree_t*));
     int index = 0;
@@ -111,14 +116,14 @@ int monte_carlo(tree_t* tree, int* rows, int N_rows, int total_sticks, double pe
         tree->cell[row_p]->children[index]->plays = 0;
         tree->cell[row_p]->children[index]->row = i;
         tree->cell[row_p]->children[index]->sticks = j;
-        //tree->cell[row_p]->children[index]->cell = (cell_t**)malloc((N_rows+1)*sizeof(cell_t*));
         index++;
       }
     }
     
     // Simulate random moves
-    index = (double)total_sticks*rand()/RAND_MAX;
-    int win = random_move(rows_temp, N_rows, total_sticks, tree->cell[row_p]->children[index]->row, tree->cell[row_p]->children[index]->sticks, perturb);
+    index = (double)tree->cell[row_p]->total_sticks*rand()/RAND_MAX;
+    int win = random_move(rows_temp, N_rows, tree->cell[row_p]->total_sticks, tree->cell[row_p]->children[index]->row, 
+                          tree->cell[row_p]->children[index]->sticks, perturb);
     tree->wins += win;
     tree->plays++;
 
@@ -128,12 +133,13 @@ int monte_carlo(tree_t* tree, int* rows, int N_rows, int total_sticks, double pe
   // If this is an internal node
   else {
     
+    printf("I\n");
     // Find the child with highest ucb
     tree_t* max_child = tree->cell[row_p]->children[0];
     double ucb_max = (double)max_child->wins/max_child->plays + c*sqrt(log(N_plays)/max_child->plays);
     double ucb;
 
-    for (int i = 1; i < total_sticks; i++) {
+    for (int i = 1; i < tree->cell[row_p]->total_sticks; i++) {
       // If no plays has been made
       if (tree->cell[row_p]->children[i]->plays == 0) {
         max_child = tree->cell[row_p]->children[i];
@@ -150,14 +156,14 @@ int monte_carlo(tree_t* tree, int* rows, int N_rows, int total_sticks, double pe
 
     // Update the rows
     rows_temp[max_child->row] -= max_child->sticks;
-    total_sticks -= max_child->sticks;
+    tree->cell[row_p]->total_sticks -= max_child->sticks;
     
     int row_p_temp = 0;
     if ((double)rand()/RAND_MAX < perturb)
       row_p_temp = (double)N_rows*rand()/RAND_MAX;
 
     // Traverse down the tree
-    int win = 1 - monte_carlo(max_child, rows_temp, N_rows, total_sticks, perturb, row_p_temp);
+    int win = 1 - monte_carlo(max_child, rows_temp, N_rows, tree->cell[row_p]->total_sticks, perturb, row_p_temp);
     tree->wins += win;
     tree->plays++;
     free(rows_temp);
@@ -168,19 +174,21 @@ int monte_carlo(tree_t* tree, int* rows, int N_rows, int total_sticks, double pe
 
 
 // Free a tree
-void free_tree(tree_t* tree, int N_rows, int total_sticks) {
+void free_tree(tree_t* tree, int N_rows) {
   if (tree != NULL) {
     if (tree->cell != NULL) {
-      for (int i = 0; i <= N_rows; i++)
+      for (int i = 0; i <= N_rows; i++) {
         if (tree->cell[i]->children != NULL) {
-          for (int j = 0; j < total_sticks; j++)
-            free_tree(tree->cell[i]->children[j], N_rows, tree->cell[i]->total_sticks);
-        free(tree->cell[i]->children);
+          for (int j = 0; j < tree->cell[i]->total_sticks; j++)
+            free_tree(tree->cell[i]->children[j], N_rows);
+          free(tree->cell[i]->children);
         }
+        free(tree->cell[i]);
+      }
+      free(tree->cell);
     }
-    free(tree->cell);
+    free(tree);
   }
-  free(tree);
   return;
 }
 
@@ -219,6 +227,7 @@ void x_player(move_t* res, int* rows, int N_rows, int total_sticks, double pertu
     //printf("Done: sum = %i, ts = %i\n", rows[0]+rows[1]+rows[2]+rows[3], total_sticks);
     N_plays++;
   }
+  printf("Free\n");
   
   // Decide which move to make
   // (Choose the child so that the opponent has the lowest chance of winning)
@@ -232,7 +241,7 @@ void x_player(move_t* res, int* rows, int N_rows, int total_sticks, double pertu
   res->sticks = min_child->sticks;
   
   // Free and return
-  free_tree(root, N_rows, total_sticks);
+  free_tree(root, N_rows);
   
   return;
 }
