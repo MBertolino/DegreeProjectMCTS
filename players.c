@@ -3,8 +3,7 @@
 #include "structs.h"
 #include <math.h>
 
-int N_plays;
-const double c = 1.4;
+double c = 1;
 
 
 // Randomly perturb the board (Ska kanske läggas nån annanstans)
@@ -71,7 +70,7 @@ int monte_carlo(tree_t* tree, int* rows, int N_rows, double perturb, int row_p) 
   // If the board is to be perturbed
   if (row_p >= 0) {
     
-    // Allocate memory
+    // Allocate memory (if needed)
     if (tree->perturbations == NULL) {
       tree->perturbations = (tree_t**)malloc(N_rows*sizeof(tree_t*));
       for (int i = 0; i < N_rows; i++) {
@@ -147,7 +146,9 @@ int monte_carlo(tree_t* tree, int* rows, int N_rows, double perturb, int row_p) 
     
     // Find the child with highest ucb
     tree_t* max_child = tree->children[0];
-    double ucb_max = (double)max_child->wins/max_child->plays + c*sqrt(log(N_plays)/max_child->plays);
+    //double ucb_max = (double)max_child->wins/max_child->plays + c*sqrt(log(tree->plays)/max_child->plays);
+    //double ucb_max = 2*max_child->wins - max_child->plays + c*sqrt(log(tree->plays)/max_child->plays);
+    double ucb_max = 2.*max_child->wins/max_child->plays - 1 + c*sqrt(log(tree->plays)/max_child->plays);
     double ucb;
     for (int i = 1; i < total_sticks; i++) {
       
@@ -158,7 +159,9 @@ int monte_carlo(tree_t* tree, int* rows, int N_rows, double perturb, int row_p) 
       }
       
       // Compute ucb
-      ucb = (double)tree->children[i]->wins/tree->children[i]->plays + c*sqrt(log(N_plays)/tree->children[i]->plays);
+      //ucb = (double)tree->children[i]->wins/tree->children[i]->plays + c*sqrt(log(tree->plays)/tree->children[i]->plays);
+      //ucb = 2*tree->children[i]->wins - tree->children[i]->plays + c*sqrt(log(tree->plays)/tree->children[i]->plays);
+      ucb = 2.*tree->children[i]->wins/tree->children[i]->plays - 1 + c*sqrt(log(tree->plays)/tree->children[i]->plays);
       if (ucb > ucb_max) {
         ucb = ucb_max;
         max_child = tree->children[i];
@@ -231,8 +234,9 @@ void x_player(move_t* res, int* rows, int N_rows, int total_sticks, double pertu
   root->sticks = -1;
   root->total_sticks = total_sticks;
   
-  N_plays = 0;
-  int N_sims = 5000;
+  // Simulate games
+  int N_plays = 0;
+  int N_sims = 2*35;
   for (int k = 0; k < N_sims; k++) {
     monte_carlo(root, rows, N_rows, perturb, -1);
     N_plays++;
@@ -274,7 +278,7 @@ void s_player(move_t* res, int* rows, int N_rows, int total_sticks, double pertu
     stats[i] = (int*)calloc(rows[i], sizeof(int));
   
   // Simulate moves using random simulations
-  for (int k = 0; k < 1000; k++)
+  for (int k = 0; k < 2; k++)
     for (int i = 0; i < N_rows; i++)
       for (int j = 0; j < rows[i]; j++)
         stats[i][j] += random_move(rows, N_rows, total_sticks, i, j+1, perturb);
