@@ -3,8 +3,7 @@
 #include "structs.h"
 #include <math.h>
 
-int N_plays;
-const double c = 1.4;
+double c = 1;
 
 
 // Randomly perturb the board (Ska kanske läggas nån annanstans)
@@ -65,8 +64,41 @@ int random_move(int* rows, int N_rows, int total_sticks, int row, int sticks, do
 }
 
 
-int monte_carlo(tree_t* tree, int* rows, int N_rows, double perturb) {
+int monte_carlo(tree_t* tree, int* rows, int N_rows, double perturb, int row_p) {
   int total_sticks = tree->total_sticks;
+  
+  // If the board is to be perturbed
+  if (row_p >= 0) {
+    
+    // Allocate memory (if needed)
+    if (tree->perturbations == NULL) {
+      tree->perturbations = (tree_t**)malloc(N_rows*sizeof(tree_t*));
+      for (int i = 0; i < N_rows; i++) {
+        tree->perturbations[i] = (tree_t*)malloc(sizeof(tree_t));
+        tree->perturbations[i]->children = NULL;
+        tree->perturbations[i]->perturbations = NULL;
+        tree->perturbations[i]->wins = 0;
+        tree->perturbations[i]->plays = 0;
+        tree->perturbations[i]->row = tree->row;
+        tree->perturbations[i]->sticks = tree->sticks;
+        tree->perturbations[i]->total_sticks = total_sticks + 1;
+      }
+    }
+    
+    // Update the board according to the perturbation
+    int* rows_temp = (int*)malloc(N_rows*sizeof(int));
+    for (int m = 0; m < N_rows; m++)
+      rows_temp[m] = rows[m];
+    rows_temp[row_p]++;
+    
+    // Traverse down the tree
+    int win = monte_carlo(tree->perturbations[row_p], rows_temp, N_rows, perturb, -1);
+    tree->wins += win;
+    tree->plays++;
+    
+    free(rows_temp);
+    return win;
+  }
   
   // See if a winning move is possible
   for (int i = 0; i < N_rows; i++) {
@@ -90,6 +122,7 @@ int monte_carlo(tree_t* tree, int* rows, int N_rows, double perturb) {
       for (int j = 1; j <= rows[i]; j++) {
         tree->children[index] = (tree_t*)malloc(sizeof(tree_t));
         tree->children[index]->children = NULL;
+        tree->children[index]->perturbations = NULL;
         tree->children[index]->wins = 0;
         tree->children[index]->plays = 0;
         tree->children[index]->row = i;
@@ -113,7 +146,9 @@ int monte_carlo(tree_t* tree, int* rows, int N_rows, double perturb) {
     
     // Find the child with highest ucb
     tree_t* max_child = tree->children[0];
-    double ucb_max = (double)max_child->wins/max_child->plays + c*sqrt(log(N_plays)/max_child->plays);
+    //double ucb_max = (double)max_child->wins/max_child->plays + c*sqrt(log(tree->plays)/max_child->plays);
+    //double ucb_max = 2*max_child->wins - max_child->plays + c*sqrt(log(tree->plays)/max_child->plays);
+    double ucb_max = 2.*max_child->wins/max_child->plays - 1 + c*sqrt(log(tree->plays)/max_child->plays);
     double ucb;
     for (int i = 1; i < total_sticks; i++) {
       
@@ -124,7 +159,9 @@ int monte_carlo(tree_t* tree, int* rows, int N_rows, double perturb) {
       }
       
       // Compute ucb
-      ucb = (double)tree->children[i]->wins/tree->children[i]->plays + c*sqrt(log(N_plays)/tree->children[i]->plays);
+      //ucb = (double)tree->children[i]->wins/tree->children[i]->plays + c*sqrt(log(tree->plays)/tree->children[i]->plays);
+      //ucb = 2*tree->children[i]->wins - tree->children[i]->plays + c*sqrt(log(tree->plays)/tree->children[i]->plays);
+      ucb = 2.*tree->children[i]->wins/tree->children[i]->plays - 1 + c*sqrt(log(tree->plays)/tree->children[i]->plays);
       if (ucb > ucb_max) {
         ucb = ucb_max;
         max_child = tree->children[i];
@@ -137,8 +174,13 @@ int monte_carlo(tree_t* tree, int* rows, int N_rows, double perturb) {
       rows_temp[m] = rows[m];
     rows_temp[max_child->row] -= max_child->sticks;
     
+    // Perturb the tree
+    int row_p_temp = -1;
+    if ((double)rand()/RAND_MAX < perturb)
+      row_p_temp = (double)N_rows*rand()/RAND_MAX;
+    
     // Traverse down the tree
-    int win = 1 - monte_carlo(max_child, rows_temp, N_rows, perturb);
+    int win = 1 - monte_carlo(max_child, rows_temp, N_rows, perturb, row_p_temp);
     tree->wins += win;
     tree->plays++;
     
@@ -149,13 +191,17 @@ int monte_carlo(tree_t* tree, int* rows, int N_rows, double perturb) {
 
 
 // Free a tree
-void free_tree(tree_t* tree) {
+void free_tree(tree_t* tree, int N_rows) {
   if (tree != NULL) {
     if (tree->children != NULL) {
-      for (int i = 0; i < tree->total_sticks; i++) {
-        free_tree(tree->children[i]);
-      }
+      for (int i = 0; i < tree->total_sticks; i++)
+        free_tree(tree->children[i], N_rows);
       free(tree->children);
+    }
+    if (tree->perturbations != NULL) {
+      for (int i = 0; i < N_rows; i++)
+        free_tree(tree->perturbations[i], N_rows);
+      free(tree->perturbations);
     }
     free(tree);
   }
@@ -181,16 +227,18 @@ void x_player(move_t* res, int* rows, int N_rows, int total_sticks, double pertu
   // Initialize
   tree_t* root = (tree_t*)malloc(sizeof(tree_t));
   root->children = NULL;
+  root->perturbations = NULL;
   root->wins = 0;
   root->plays = 0;
   root->row = -1;
   root->sticks = -1;
   root->total_sticks = total_sticks;
   
-  N_plays = 0;
-  int N_sims = 5000;
+  // Simulate games
+  int N_plays = 0;
+  int N_sims = 2*35;
   for (int k = 0; k < N_sims; k++) {
-    monte_carlo(root, rows, N_rows, perturb);
+    monte_carlo(root, rows, N_rows, perturb, -1);
     N_plays++;
   }
   
@@ -205,7 +253,7 @@ void x_player(move_t* res, int* rows, int N_rows, int total_sticks, double pertu
   res->sticks = min_child->sticks;
   
   // Free and return
-  free_tree(root);
+  free_tree(root, N_rows);
   return;
 }
 
@@ -230,7 +278,7 @@ void s_player(move_t* res, int* rows, int N_rows, int total_sticks, double pertu
     stats[i] = (int*)calloc(rows[i], sizeof(int));
   
   // Simulate moves using random simulations
-  for (int k = 0; k < 1000; k++)
+  for (int k = 0; k < 2; k++)
     for (int i = 0; i < N_rows; i++)
       for (int j = 0; j < rows[i]; j++)
         stats[i][j] += random_move(rows, N_rows, total_sticks, i, j+1, perturb);
