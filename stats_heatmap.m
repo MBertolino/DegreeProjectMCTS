@@ -1,7 +1,7 @@
 clear;
 
 % Import data
-stats = 1 - csvread('../statistics/stats_pplayer_1.csv');
+stats = 1 - csvread('../statistics/stats_pplayer.csv');
 stats_blurred = imgaussfilt(stats, 30);
 N_vals = size(stats, 2);
 
