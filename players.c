@@ -419,8 +419,8 @@ void q_player(move_t* res, int* rows, int N_rows, double q, int total_sticks, in
   }
   
   // Choose the move with best probabilities
-  int prob;
-  int prob_max = 0; 
+  double prob;
+  double prob_max = 0; 
   for (int i = 0; i < N_rows; i++) {
     for (int j = 1; j < rows[i]; j++) {
       rows_temp[i] = rows[i] - j;
