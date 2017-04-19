@@ -6,6 +6,9 @@ void perturb_board(int N_rows, int* rows, int* total_sticks, double perturb);
 // The p-player
 void p_player(move_t* res, int* rows, int N_rows, double p, int total_sticks);
 
+// The q-player
+void q_player(move_t* res, int* rows, int N_rows, double q, int total_sticks, int perturb);
+
 // The s-player
 void s_player(move_t* res, int* rows, int N_rows, int total_sticks, double perturb);
 

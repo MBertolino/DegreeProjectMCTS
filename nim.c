@@ -13,9 +13,9 @@
 // Choose which game to play: 0 = normal, (0 1] = perturbed
 double perturb = 0.5;
 
-// Define players: Human = 0, p = 1, s = 2, x = 3, r = 4
+// Define players: Human = 0, p = 1, q = 2, s = 3, x = 4, r = 5
 #define PLAYER1 0
-#define PLAYER2 3
+#define PLAYER2 2
 
 // p-value of the p-players
 #if PLAYER1 == 1
@@ -23,6 +23,14 @@ double perturb = 0.5;
 #endif
 #if PLAYER2 == 1
   double p2 = 0.5;
+#endif
+
+// q-value of the q-players
+#if PLAYER1 == 2
+  double q1 = 0.5;
+#endif
+#if PLAYER2 == 2
+  double q2 = 0.5;
 #endif
 
 
@@ -48,7 +56,7 @@ int main(int argc, char* argv[]) {
   int *rows = (int*)malloc(N_rows*sizeof(int));
   int total_sticks = 0;
   for (int i = 0; i < N_rows; i++) {
-    rows[i] = 3 + i*2;
+    rows[i] = 1 + i;
     total_sticks += rows[i];
   }
   
@@ -77,10 +85,12 @@ int main(int argc, char* argv[]) {
       #elif PLAYER1 == 1
         p_player(res, rows, N_rows, p1, total_sticks);
       #elif PLAYER1 == 2
-        s_player(res, rows, N_rows, total_sticks, perturb);
+        q_player(res, rows, N_rows, q1, total_sticks, perturb);
       #elif PLAYER1 == 3
-        x_player(res, rows, N_rows, total_sticks, perturb);
+        s_player(res, rows, N_rows, total_sticks, perturb);
       #elif PLAYER1 == 4
+        x_player(res, rows, N_rows, total_sticks, perturb);
+      #elif PLAYER1 == 5
         r_player(res, rows, N_rows, total_sticks);
       #endif
     
@@ -91,10 +101,12 @@ int main(int argc, char* argv[]) {
       #elif PLAYER2 == 1
         p_player(res, rows, N_rows, p2, total_sticks);
       #elif PLAYER2 == 2
-        s_player(res, rows, N_rows, total_sticks, perturb);
+        q_player(res, rows, N_rows, q2, total_sticks, perturb);
       #elif PLAYER2 == 3
-        x_player(res, rows, N_rows, total_sticks, perturb);
+        s_player(res, rows, N_rows, total_sticks, perturb);
       #elif PLAYER2 == 4
+        x_player(res, rows, N_rows, total_sticks, perturb);
+      #elif PLAYER2 == 5
         r_player(res, rows, N_rows, total_sticks);
       #endif
     }

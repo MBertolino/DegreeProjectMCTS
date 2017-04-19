@@ -9,7 +9,8 @@ double c = 1;
 // Randomly perturb the board (Ska kanske läggas nån annanstans)
 void perturb_board(int N_rows, int* rows, int* total_sticks, double perturb) {
   if ((double)rand()/RAND_MAX < perturb) {
-    int row = (double)N_rows*rand()/RAND_MAX;
+    //int row = (double)N_rows*rand()/RAND_MAX;
+    int row = 0;
     rows[row]++;
     (*total_sticks)++;    
   }
@@ -70,7 +71,7 @@ int monte_carlo(tree_t* tree, int* rows, int N_rows, double perturb, int row_p) 
   // If the board is to be perturbed
   if (row_p >= 0) {
     
-    // Allocate memory (if needed)
+    // Allocate memory (if needed) (Change N_rows = 1 if only perturbing first row)
     if (tree->perturbations == NULL) {
       tree->perturbations = (tree_t**)malloc(N_rows*sizeof(tree_t*));
       for (int i = 0; i < N_rows; i++) {
@@ -349,6 +350,89 @@ void p_player(move_t* res, int* rows, int N_rows, double p, int total_sticks) {
   }
   res->row = row;
   res->sticks = sticks;
+
+  return;
+}
+
+double prob_nimsum(int* rows, int N_rows, int total_sticks, int phi, int perturb) {
+  printf("phi = %i\n", phi);
+  // If phi is negative
+  if (phi < 0)
+    return 0;
+  
+  // Base case: empty board
+  if (total_sticks == 0)
+    return pow(perturb, phi)*(1 - perturb);
+  
+  // Allocate rows_temp
+  int* rows_temp = (int*)malloc(N_rows*sizeof(int));
+  for (int i = 0; i < N_rows; i++) {
+    rows_temp[i] = rows[i];
+  }
+  
+  // Params for recursive formula
+  int alpha = rows[0];
+  int b = 0;
+  for (int i = 1; i < N_rows; i++) {
+    b ^= rows[i];
+  }
+  
+  // Compute probabilities
+  // Not perturbed row alpha
+  double prob1 = 0;
+  for (int i = 0; i < alpha; i++) {
+    rows_temp[0] = i;
+    prob1 += prob_nimsum(rows_temp, N_rows, total_sticks - alpha + i, (i + (b^phi) - alpha)^b, perturb);
+  }
+  prob1 *= (1 - perturb)/total_sticks;
+  
+  // Perturbed row alpha
+  double prob2 = 0;
+  for (int i = 0; i < alpha+1; i++) {
+    rows_temp[0] = i;
+    prob2 += prob_nimsum(rows_temp, N_rows, total_sticks - alpha + i, (i + (b^phi) - alpha - 1)^b, perturb);
+  }
+  prob2 *= perturb/(total_sticks + 1);
+  
+  // Rows beta
+  rows_temp[0] = rows[0];
+  double prob3 = 0;
+  for (int j = 1; j < N_rows; j++) {
+    for (int i = 0; i < rows[j]; i++) {
+      rows_temp[j] = i;
+      prob3 += prob_nimsum(rows_temp, N_rows, total_sticks - rows[j] + i, (i^rows_temp[j]^phi), perturb);
+    }
+    rows_temp[j] = rows[j];
+  }
+  prob3 *= (1 - perturb)/total_sticks + perturb/(total_sticks + 1);
+  
+  free(rows_temp);
+  return prob1 + prob2 + prob3;
+}
+
+void q_player(move_t* res, int* rows, int N_rows, double q, int total_sticks, int perturb) {
+  
+  // Allocate rows_temp
+  int* rows_temp = (int*)malloc(N_rows*sizeof(int));
+  for (int i = 0; i < N_rows; i++) {
+    rows_temp[i] = rows[i];
+  }
+  
+  // Choose the move with best probabilities
+  int prob;
+  int prob_max = 0; 
+  for (int i = 0; i < N_rows; i++) {
+    for (int j = 1; j < rows[i]; j++) {
+      rows_temp[i] = rows[i] - j;
+      prob = prob_nimsum(rows_temp, N_rows, total_sticks - j, 0, perturb);
+      if (prob > prob_max) {
+        prob_max = prob;
+        res->row = i;
+        res->sticks = j;
+      }
+    }
+    rows_temp[i] = rows[i];
+  }
   
   return;
 }

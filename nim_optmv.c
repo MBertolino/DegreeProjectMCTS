@@ -13,14 +13,15 @@
 // Choose which game to play: 0 = normal, (0 1] = perturbed
 double perturb = 0.5;
 
-// Define players: Human = 0, p = 1, s = 2, x = 3, r = 4
+// Define players: Human = 0, p = 1, q = 2, s = 3, x = 4, r = 5
 #define PLAYER 3
 
 // p-value of the p-players
 #if PLAYER == 1
   double p = 0.5;
+#elif PLAYER == 2
+  double q = 0.5;
 #endif
-
 
 int main(int argc, char* argv[]) {
   
@@ -82,10 +83,12 @@ int main(int argc, char* argv[]) {
       #elif PLAYER == 1
         p_player(res, rows, N_rows, p, total_sticks);
       #elif PLAYER == 2
-        s_player(res, rows, N_rows, total_sticks, perturb);
+        q_player(res, rows, N_rows, q, total_sticks, perturb);
       #elif PLAYER == 3
-        x_player(res, rows, N_rows, total_sticks, perturb);
+        s_player(res, rows, N_rows, total_sticks, perturb);
       #elif PLAYER == 4
+        x_player(res, rows, N_rows, total_sticks, perturb);
+      #elif PLAYER == 5
         r_player(res, rows, N_rows, total_sticks);
       #endif
       
