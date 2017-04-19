@@ -146,11 +146,11 @@ figure()
 
 % figure()
 % subplot(2, 2, 1)
-% plot(p, Px11(:,1));
-% title('Px11')
-% xlabel('p')
-% ylabel('Probability X = j')
-% legend('X = 0', 'X = 1', 'X = 2', 'X = 3', 'X = 4')
+plot(p, Px11(:,1));
+title('Px11')
+xlabel('p')
+ylabel('Probability X = j')
+legend('X = 0', 'X = 1', 'X = 2', 'X = 3', 'X = 4')
 
 % subplot(2, 2, 2)
 % plot(p, Px02(:,1));
@@ -167,11 +167,11 @@ figure()
 % legend('X = 3', 'X = 4', 'X = 5', 'X = 6', 'X = 7')
 
 % subplot(2, 2, 4)
-plot(p, Px21);
-title('Px21')
-xlabel('p')
-ylabel('Probability X = j')
-legend('X = 2', 'X = 3', 'X = 4', 'X = 5', 'X = 6', 'X = 7', 'X = 8', 'X = 9')
+% plot(p, Px21);
+% title('Px21')
+% xlabel('p')
+% ylabel('Probability X = j')
+% legend('X = 2', 'X = 3', 'X = 4', 'X = 5', 'X = 6', 'X = 7', 'X = 8', 'X = 9')
 
 % figure()
 % plot(p, Px12);

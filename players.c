@@ -354,8 +354,8 @@ void p_player(move_t* res, int* rows, int N_rows, double p, int total_sticks) {
   return;
 }
 
-double prob_nimsum(int* rows, int N_rows, int total_sticks, int phi, int perturb) {
-  printf("phi = %i\n", phi);
+double prob_nimsum(int* rows, int N_rows, int total_sticks, int phi, double perturb) {
+  
   // If phi is negative
   if (phi < 0)
     return 0;
@@ -386,6 +386,9 @@ double prob_nimsum(int* rows, int N_rows, int total_sticks, int phi, int perturb
   }
   prob1 *= (1 - perturb)/total_sticks;
   
+  //printf("prob1 = %lf\n", prob1);
+  
+  
   // Perturbed row alpha
   double prob2 = 0;
   for (int i = 0; i < alpha+1; i++) {
@@ -393,6 +396,8 @@ double prob_nimsum(int* rows, int N_rows, int total_sticks, int phi, int perturb
     prob2 += prob_nimsum(rows_temp, N_rows, total_sticks - alpha + i, (i + (b^phi) - alpha - 1)^b, perturb);
   }
   prob2 *= perturb/(total_sticks + 1);
+  //printf("prob2 = %lf\n", prob1);
+
   
   // Rows beta
   rows_temp[0] = rows[0];
@@ -410,7 +415,7 @@ double prob_nimsum(int* rows, int N_rows, int total_sticks, int phi, int perturb
   return prob1 + prob2 + prob3;
 }
 
-void q_player(move_t* res, int* rows, int N_rows, double q, int total_sticks, int perturb) {
+void q_player(move_t* res, int* rows, int N_rows, double q, int total_sticks, double perturb) {
   
   // Allocate rows_temp
   int* rows_temp = (int*)malloc(N_rows*sizeof(int));
@@ -425,6 +430,8 @@ void q_player(move_t* res, int* rows, int N_rows, double q, int total_sticks, in
     for (int j = 1; j < rows[i]; j++) {
       rows_temp[i] = rows[i] - j;
       prob = prob_nimsum(rows_temp, N_rows, total_sticks - j, 0, perturb);
+      printf("prob = %lf\n", prob);
+
       if (prob > prob_max) {
         prob_max = prob;
         res->row = i;
@@ -433,6 +440,7 @@ void q_player(move_t* res, int* rows, int N_rows, double q, int total_sticks, in
     }
     rows_temp[i] = rows[i];
   }
+  printf("prob_max = %lf\n", prob_max);
   
   return;
 }
