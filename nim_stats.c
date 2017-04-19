@@ -11,11 +11,11 @@
 #define C_GREEN  "\x1B[32m"
 
 // Choose which game to play: 0 = normal, (0 1] = perturbed
-double perturb = 0;
+double perturb = 0.5;
 
 // Define players: Human = 0, p = 1, q = 2, s = 3, x = 4, r = 5
 #define PLAYER1 1
-#define PLAYER2 3 // <-- change this value
+#define PLAYER2 2 // <-- change this value
 
 
 int main(int argc, char* argv[]) {
@@ -49,9 +49,9 @@ int main(int argc, char* argv[]) {
   printf("%*s| %i%% ", prog_max, "", 0);
   fflush(stdout);
   
-  int N_vals1 = 50;
+  int N_vals1 = 10;
   int N_vals2 = 1;
-  int N_games = 5000;
+  int N_games = 10;
   int** wins = (int**)malloc(N_vals1*sizeof(int*));
   for (int i = 0; i < N_vals1; i++)
     wins[i] = (int*)malloc(N_vals2*sizeof(int));
@@ -89,7 +89,7 @@ int main(int argc, char* argv[]) {
             #elif PLAYER1 == 1
               p_player(res, rows, N_rows, p1, total_sticks);
             #elif PLAYER1 == 2
-              q_player(res, rows, N_rows, q1, total_sticks, perturb);
+              q_player(res, rows, N_rows, 0, total_sticks, perturb);
             #elif PLAYER1 == 3
               s_player(res, rows, N_rows, total_sticks, perturb);
             #elif PLAYER1 == 4
@@ -105,7 +105,7 @@ int main(int argc, char* argv[]) {
             #elif PLAYER2 == 1
               p_player(res, rows, N_rows, p2, total_sticks);
             #elif PLAYER2 == 2
-              q_player(res, rows, N_rows, q2, total_sticks, perturb);
+              q_player(res, rows, N_rows, 0, total_sticks, perturb);
             #elif PLAYER2 == 3
               s_player(res, rows, N_rows, total_sticks, perturb);
             #elif PLAYER2 == 4
@@ -148,10 +148,12 @@ int main(int argc, char* argv[]) {
   #elif PLAYER2 == 1
     FILE* f = fopen("../statistics/stats_pplayer.csv", "wb");
   #elif PLAYER2 == 2
-    FILE* f = fopen("../statistics/stats_splayer.csv", "wb");
+    FILE* f = fopen("../statistics/stats_qplayer.csv", "wb");
   #elif PLAYER2 == 3
-    FILE* f = fopen("../statistics/stats_xplayer.csv", "wb");
+    FILE* f = fopen("../statistics/stats_splayer.csv", "wb");
   #elif PLAYER2 == 4
+    FILE* f = fopen("../statistics/stats_xplayer.csv", "wb");
+  #elif PLAYER2 == 5
     FILE* f = fopen("../statistics/stats_rplayer.csv", "wb");
   #endif
   for (int i = 0; i < N_vals1; i++) {

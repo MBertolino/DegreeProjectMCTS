@@ -386,9 +386,6 @@ double prob_nimsum(int* rows, int N_rows, int total_sticks, int phi, double pert
   }
   prob1 *= (1 - perturb)/total_sticks;
   
-  //printf("prob1 = %lf\n", prob1);
-  
-  
   // Perturbed row alpha
   double prob2 = 0;
   for (int i = 0; i < alpha+1; i++) {
@@ -396,8 +393,6 @@ double prob_nimsum(int* rows, int N_rows, int total_sticks, int phi, double pert
     prob2 += prob_nimsum(rows_temp, N_rows, total_sticks - alpha + i, (i + (b^phi) - alpha - 1)^b, perturb);
   }
   prob2 *= perturb/(total_sticks + 1);
-  //printf("prob2 = %lf\n", prob1);
-
   
   // Rows beta
   rows_temp[0] = rows[0];
@@ -430,7 +425,6 @@ void q_player(move_t* res, int* rows, int N_rows, double q, int total_sticks, do
     for (int j = 1; j <= rows[i]; j++) {
       rows_temp[i] = rows[i] - j;
       prob = prob_nimsum(rows_temp, N_rows, total_sticks - j, 0, perturb);
-      printf("prob = %lf\n", prob);
 
       if (prob > prob_max) {
         prob_max = prob;
@@ -440,7 +434,6 @@ void q_player(move_t* res, int* rows, int N_rows, double q, int total_sticks, do
     }
     rows_temp[i] = rows[i];
   }
-  printf("prob_max = %lf\n", prob_max);
   
   return;
 }
