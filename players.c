@@ -427,7 +427,7 @@ void q_player(move_t* res, int* rows, int N_rows, double q, int total_sticks, do
   double prob;
   double prob_max = 0; 
   for (int i = 0; i < N_rows; i++) {
-    for (int j = 1; j < rows[i]; j++) {
+    for (int j = 1; j <= rows[i]; j++) {
       rows_temp[i] = rows[i] - j;
       prob = prob_nimsum(rows_temp, N_rows, total_sticks - j, 0, perturb);
       printf("prob = %lf\n", prob);
