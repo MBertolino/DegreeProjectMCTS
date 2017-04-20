@@ -1,14 +1,14 @@
 clear;
 
 % Import data
-stats = csvread('../statistics/stats_xplayer.csv');
+stats = csvread('../statistics/stats_qplayer.csv');
 N_vals = length(stats);
 step = 1/N_vals;
 
 %
 % Plot
 figure;
-x_vals = 0:step:1-step;
+x_vals = 0:step:1;
 plot(x_vals, stats, '*b');
 title('Win rate');
 xlabel('p-value');

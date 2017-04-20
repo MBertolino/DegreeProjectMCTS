@@ -11,11 +11,11 @@
 #define C_GREEN  "\x1B[32m"
 
 // Choose which game to play: 0 = normal, (0 1] = perturbed
-double perturb = 0.5;
+double perturb = 0.3;
 
 // Define players: Human = 0, p = 1, q = 2, s = 3, x = 4, r = 5
 #define PLAYER1 1
-#define PLAYER2 2 // <-- change this value
+#define PLAYER2 4 // <-- change this value
 
 
 int main(int argc, char* argv[]) {
@@ -49,17 +49,17 @@ int main(int argc, char* argv[]) {
   printf("%*s| %i%% ", prog_max, "", 0);
   fflush(stdout);
   
-  int N_vals1 = 10;
+  int N_vals1 = 100;
   int N_vals2 = 1;
-  int N_games = 10;
+  int N_games = 1000;
   int** wins = (int**)malloc(N_vals1*sizeof(int*));
   for (int i = 0; i < N_vals1; i++)
     wins[i] = (int*)malloc(N_vals2*sizeof(int));
   int *rows = (int*)malloc(N_rows*sizeof(int));
   
   // Begin simulations
-  for (int i = 0; i < N_vals1; i++) {
-    for (int j = 0; j < N_vals2; j++) {
+  for (int i = 0; i <= N_vals1; i++) {
+    for (int j = 0; j <= N_vals2; j++) {
       
       // p-value of the p-players
       #if PLAYER1 == 1
@@ -74,7 +74,7 @@ int main(int argc, char* argv[]) {
         // Create the board
         int total_sticks = 0;
         for (int i = 0; i < N_rows; i++) {
-          rows[i] = 3 + i*2;
+          rows[i] = 1 + i;
           total_sticks += rows[i];
         }
         
@@ -115,6 +115,9 @@ int main(int argc, char* argv[]) {
             #endif
           }
           
+          // Randomly perturb board
+          perturb_board(N_rows, rows, &total_sticks, perturb);
+          
           // Update board
           row = res->row;
           sticks = res->sticks;
@@ -125,8 +128,7 @@ int main(int argc, char* argv[]) {
             break;
           }
           
-          // Randomly perturb board
-          perturb_board(N_rows, rows, &total_sticks, perturb);
+          
         }
       }
     }

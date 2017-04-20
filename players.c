@@ -400,7 +400,7 @@ double prob_nimsum(int* rows, int N_rows, int total_sticks, int phi, double pert
   for (int j = 1; j < N_rows; j++) {
     for (int i = 0; i < rows[j]; i++) {
       rows_temp[j] = i;
-      prob3 += prob_nimsum(rows_temp, N_rows, total_sticks - rows[j] + i, (i^rows_temp[j]^phi), perturb);
+      prob3 += prob_nimsum(rows_temp, N_rows, total_sticks - rows[j] + i, (i^rows[j]^phi), perturb);
     }
     rows_temp[j] = rows[j];
   }
@@ -412,20 +412,32 @@ double prob_nimsum(int* rows, int N_rows, int total_sticks, int phi, double pert
 
 void q_player(move_t* res, int* rows, int N_rows, double q, int total_sticks, double perturb) {
   
+  /* See if a winning move is possible *
+  for (int i = 0; i < N_rows; i++) {
+    if (rows[i] == 0)
+      continue;
+    if (rows[i] == total_sticks) {
+      res->row = i;
+      res->sticks = rows[i];
+      return;
+    }
+    break;
+  } //*/
+  
   // Allocate rows_temp
   int* rows_temp = (int*)malloc(N_rows*sizeof(int));
   for (int i = 0; i < N_rows; i++) {
     rows_temp[i] = rows[i];
   }
   
-  // Choose the move with best probabilities
+  // Choose the move with the best probability
   double prob;
-  double prob_max = 0; 
+  double prob_max = 0;
   for (int i = 0; i < N_rows; i++) {
     for (int j = 1; j <= rows[i]; j++) {
       rows_temp[i] = rows[i] - j;
       prob = prob_nimsum(rows_temp, N_rows, total_sticks - j, 0, perturb);
-
+      
       if (prob > prob_max) {
         prob_max = prob;
         res->row = i;
@@ -434,7 +446,6 @@ void q_player(move_t* res, int* rows, int N_rows, double q, int total_sticks, do
     }
     rows_temp[i] = rows[i];
   }
-  
   return;
 }
 
@@ -447,7 +458,7 @@ void h_player(move_t* res, int* rows, int N_rows) {
     int ret = scanf("%i%i", &row, &sticks); // cannot read strings
     row--;
     if (ret <= 0) {
-      printf("Illegal input: Enter numbers plz. Try again:\n");
+      printf("Illegal input: Enter numbers please. Try again:\n");
       continue;
     }
     if (row > N_rows-1 || row < 0) {

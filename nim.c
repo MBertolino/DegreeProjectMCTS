@@ -11,7 +11,7 @@
 #define C_GREEN  "\x1B[32m"
 
 // Choose which game to play: 0 = normal, (0 1] = perturbed
-double perturb = 0.5;
+double perturb = 0;
 
 // Define players: Human = 0, p = 1, q = 2, s = 3, x = 4, r = 5
 #define PLAYER1 0
@@ -56,7 +56,7 @@ int main(int argc, char* argv[]) {
   int *rows = (int*)malloc(N_rows*sizeof(int));
   int total_sticks = 0;
   for (int i = 0; i < N_rows; i++) {
-    rows[i] = 1;
+    rows[i] = 2+i;
     total_sticks += rows[i];
   }
   
