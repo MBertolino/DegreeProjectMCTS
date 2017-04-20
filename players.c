@@ -354,6 +354,7 @@ void p_player(move_t* res, int* rows, int N_rows, double p, int total_sticks) {
   return;
 }
 
+
 double prob_nimsum(int* rows, int N_rows, int total_sticks, int phi, double perturb) {
   
   // If phi is negative
@@ -410,6 +411,7 @@ double prob_nimsum(int* rows, int N_rows, int total_sticks, int phi, double pert
   return prob1 + prob2 + prob3;
 }
 
+
 void q_player(move_t* res, int* rows, int N_rows, double q, int total_sticks, double perturb) {
   
   /* See if a winning move is possible *
@@ -429,6 +431,16 @@ void q_player(move_t* res, int* rows, int N_rows, double q, int total_sticks, do
   for (int i = 0; i < N_rows; i++) {
     rows_temp[i] = rows[i];
   }
+  
+  // Initialize res with a random move
+  do {
+    res->row = (double)N_rows*rand()/RAND_MAX;
+  } while (rows[res->row] == 0);
+  res->sticks = 1 + (double)rows[res->row]*rand()/RAND_MAX;
+  
+  // Return the random move with probability q
+  if ((double)rand()/RAND_MAX >= q)
+    return;
   
   // Choose the move with the best probability
   double prob;

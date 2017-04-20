@@ -3,6 +3,9 @@
 // Perturb board (move this function?)
 void perturb_board(int N_rows, int* rows, int* total_sticks, double perturb);
 
+// Probaility of nimsum
+double prob_nimsum(int* rows, int N_rows, int total_sticks, int phi, double perturb);
+
 // The p-player
 void p_player(move_t* res, int* rows, int N_rows, double p, int total_sticks);
 

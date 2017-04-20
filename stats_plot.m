@@ -3,7 +3,7 @@ clear;
 % Import data
 stats = csvread('../statistics/stats_qplayer.csv');
 N_vals = length(stats);
-step = 1/N_vals;
+step = 1/(N_vals-1);
 
 %
 % Plot
