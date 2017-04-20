@@ -49,9 +49,9 @@ int main(int argc, char* argv[]) {
   printf("%*s| %i%% ", prog_max, "", 0);
   fflush(stdout);
   
-  int N_vals1 = 5;
-  int N_vals2 = 5;
-  int N_games = 5;
+  int N_vals1 = 200;
+  int N_vals2 = 200;
+  int N_games = 200;
   int** wins = (int**)malloc((N_vals1+1)*sizeof(int*));
   for (int i = 0; i <= N_vals1; i++)
     wins[i] = (int*)malloc((N_vals2+1)*sizeof(int));
