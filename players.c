@@ -414,24 +414,6 @@ double prob_nimsum(int* rows, int N_rows, int total_sticks, int phi, double pert
 
 void q_player(move_t* res, int* rows, int N_rows, double q, int total_sticks, double perturb) {
   
-  /* See if a winning move is possible *
-  for (int i = 0; i < N_rows; i++) {
-    if (rows[i] == 0)
-      continue;
-    if (rows[i] == total_sticks) {
-      res->row = i;
-      res->sticks = rows[i];
-      return;
-    }
-    break;
-  } //*/
-  
-  // Allocate rows_temp
-  int* rows_temp = (int*)malloc(N_rows*sizeof(int));
-  for (int i = 0; i < N_rows; i++) {
-    rows_temp[i] = rows[i];
-  }
-  
   // Initialize res with a random move
   do {
     res->row = (double)N_rows*rand()/RAND_MAX;
@@ -442,6 +424,12 @@ void q_player(move_t* res, int* rows, int N_rows, double q, int total_sticks, do
   if ((double)rand()/RAND_MAX >= q)
     return;
   
+  // Allocate rows_temp
+  int* rows_temp = (int*)malloc(N_rows*sizeof(int));
+  for (int i = 0; i < N_rows; i++) {
+    rows_temp[i] = rows[i];
+  }
+    
   // Choose the move with the best probability
   double prob;
   double prob_max = 0;
@@ -458,6 +446,8 @@ void q_player(move_t* res, int* rows, int N_rows, double q, int total_sticks, do
     }
     rows_temp[i] = rows[i];
   }
+  
+  free(rows_temp);
   return;
 }
 
