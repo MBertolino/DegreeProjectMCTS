@@ -9,7 +9,7 @@ typedef struct move {
 // Tree struct
 typedef struct tree {
   struct tree** children;
-  struct tree** perturbations;
+  struct tree* perturbation;
   int wins;
   int plays;
   int row;

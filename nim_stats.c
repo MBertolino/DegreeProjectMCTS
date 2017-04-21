@@ -14,8 +14,8 @@
 double perturb = 0.4;
 
 // Define players: Human = 0, p = 1, q = 2, s = 3, x = 4, r = 5
-#define PLAYER1 2
-#define PLAYER2 1 // <-- change this value
+#define PLAYER1 1
+#define PLAYER2 2 // <-- change this value
 
 
 int main(int argc, char* argv[]) {
@@ -49,13 +49,23 @@ int main(int argc, char* argv[]) {
   printf("%*s| %i%% ", prog_max, "", 0);
   fflush(stdout);
   
-  int N_vals1 = 200;
-  int N_vals2 = 200;
-  int N_games = 200;
+  // Simulation parameters
+  int N_vals1 = 100;
+  int N_vals2 = 0;
+  int N_games = 1000;
+  
+  // Allocate memory
   int** wins = (int**)malloc((N_vals1+1)*sizeof(int*));
   for (int i = 0; i <= N_vals1; i++)
     wins[i] = (int*)malloc((N_vals2+1)*sizeof(int));
+  int *rows_init = (int*)malloc(N_rows*sizeof(int));
   int *rows = (int*)malloc(N_rows*sizeof(int));
+  
+  // Create the initial board
+  for (int i = 0; i < N_rows; i++) {
+    //rows_init[i] = 3 + 2*i;
+    rows_init[i] = 1.5 + 0.5*i; // good for q-player
+  }
   
   // Begin simulations
   for (int i = 0; i <= N_vals1; i++) {
@@ -74,7 +84,7 @@ int main(int argc, char* argv[]) {
         double q1 = (double)i/N_vals1;
       #endif
       #if PLAYER2 == 2
-        double q2 = (double)j/N_vals2;
+        double q2 = 1;//(double)j/N_vals2;
       #endif
       
       for (int k = 0; k < N_games; k++) {
@@ -82,7 +92,7 @@ int main(int argc, char* argv[]) {
         // Create the board
         int total_sticks = 0;
         for (int i = 0; i < N_rows; i++) {
-          rows[i] = 1 + i;
+          rows[i] = rows_init[i];
           total_sticks += rows[i];
         }
         
@@ -166,6 +176,10 @@ int main(int argc, char* argv[]) {
   #elif PLAYER2 == 5
     FILE* f = fopen("../statistics/stats_rplayer.csv", "wb");
   #endif
+  fprintf(f, "%lf,%d,%d,%d,%d", perturb, N_vals1, N_vals2, N_games, N_rows);
+  for (int i = 0; i < N_rows; i++)
+    fprintf(f, ",%d", rows_init[i]);
+  fprintf(f, "\n");
   for (int i = 0; i <= N_vals1; i++) {
     fprintf(f, "%lf", (double)wins[i][0]/N_games);
     for (int j = 1; j <= N_vals2; j++)
@@ -178,6 +192,7 @@ int main(int argc, char* argv[]) {
   
   // Free
   free(rows);
+  free(rows_init);
   free(res);
   for (int i = 0; i <= N_vals1; i++)
     free(wins[i]);

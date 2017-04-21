@@ -1,7 +1,7 @@
 clear;
 
 % Player
-player = 'q';
+player = 's';
 
 % If the filename has some extension in the end
 extension = '';
@@ -9,6 +9,7 @@ extension = '';
 % Import data
 filename = ['../statistics/stats_' player 'player' extension '.csv'];
 data = csvread(filename);
+stats = data(2:end, :);
 
 % Game parameters
 perturb = data(1, 1);
@@ -22,7 +23,7 @@ for k = 1:N_rows
 end
 
 % Statistics
-stats = data(2:end, 1:(N_vals2+1));
+stats = data(2:end, 1:
 
 % Display game parameters
 fprintf(['\n' player '-player:\n']);
@@ -52,7 +53,7 @@ if player ~= 'p'
     figure;
     x_vals = 0:step:1;
     plot(x_vals, stats, '*b');
-    title(['Win rate (' player '-player)']);
+    title('Win rate');
     xlabel('p-value');
     ylabel('win rate');
 end
@@ -71,7 +72,7 @@ if player == 'p'
     % Plot the heatmap
     figure;
     colormap('jet');
-    imagesc(flipud(stats));
+    imagesc(flipud(stats_blurred));
     colorbar;
     title('Win rate of player 1');
     xlabel('p2');
