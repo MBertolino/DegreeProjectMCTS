@@ -55,6 +55,7 @@ if player ~= 'p'
     title(['Win rate (' player '-player)']);
     xlabel('p-value');
     ylabel('win rate');
+    ylim([0 1])
 end
 
 %% Heatmap
