@@ -51,7 +51,7 @@ if player ~= 'p'
     % Plot
     figure;
     x_vals = 0:step:1;
-    plot(x_vals, stats, '*k');
+    plot(x_vals, stats, '*b');
     title(['Win rate (' player '-player)']);
     xlabel('p-value');
     ylabel('win rate');
