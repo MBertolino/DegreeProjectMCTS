@@ -7,6 +7,7 @@ RM = /bin/rm -f
 OBJS = players.o
 NIM = nim
 STATS = nim_stats
+PERT = pert
 
 all:
 	@echo "Usage: make nim"
@@ -18,6 +19,9 @@ $(NIM): nim.o $(OBJS)
 
 $(STATS): nim_stats.o $(OBJS)
 	$(LD) -o $(STATS) nim_stats.o $(OBJS) $(LDFLAGS)
+
+$(PERT): nim_stats_pert.o $(OBJS)
+	$(LD) -o $(PERT) nim_stats_pert.o $(OBJS) $(LDFLAGS)
 
 players.o: players.c players.h structs.h
 	$(CC) $(CFLAGS) $(INCLUDES) -c players.c -std=c99

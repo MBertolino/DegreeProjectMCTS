@@ -49,8 +49,7 @@ if player ~= 'p'
     step = 1/(N_vals-1);
     
     % Plot
-%     figure;
-hold on;
+    figure;
     x_vals = 0:step:1;
     plot(x_vals, stats, '*k');
     title(['Win rate (' player '-player)']);
