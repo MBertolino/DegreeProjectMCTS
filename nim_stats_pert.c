@@ -43,11 +43,12 @@ int main(int argc, char* argv[]) {
   fflush(stdout);
   
   // Simulation parameters
-  int N_perturb = 100;
-  int N_games = 1000;
+  int N_perturb = 20;
+  int N_games = 5000;
+  double perturb_max = 0.7;
   
   // Allocate memory
-  int* wins = (int*)malloc(N_perturb*sizeof(int));
+  int *wins = (int*)malloc(N_perturb*sizeof(int));
   int *rows_init = (int*)malloc(N_rows*sizeof(int));
   int *rows = (int*)malloc(N_rows*sizeof(int));
   
@@ -56,8 +57,8 @@ int main(int argc, char* argv[]) {
     rows_init[i] = 1.5 + 0.5*i; // good for q-player
   
   // Begin simulations
-  for (int i = 0; i < N_perturb; i++) {     
-    for (int k = 0; k < N_games; k++) {
+  for (int k = 0; k < N_games; k++) {
+    for (int i = 0; i < N_perturb; i++) {
 
       // Create the board
       int total_sticks = 0;
@@ -76,11 +77,11 @@ int main(int argc, char* argv[]) {
 
         // Player 2
         } else {
-          q_player(res, rows, N_rows, 1, total_sticks, (double)i/N_perturb);
+          q_player(res, rows, N_rows, 1, total_sticks, perturb_max*i/N_perturb);
         }
 
         // Randomly perturb board
-        perturb_board(N_rows, rows, &total_sticks, (double)i/N_perturb);
+        perturb_board(N_rows, rows, &total_sticks, perturb_max*i/N_perturb);
 
         // Update board
         row = res->row;
@@ -96,18 +97,18 @@ int main(int argc, char* argv[]) {
     
     // Update progress bar
     printf("\r|");
-    int N_symbols = (int)((double)(i+1)/(N_perturb)*prog_max);
+    int N_symbols = (int)((double)(k+1)/(N_games)*prog_max);
     for (int ip = 0; ip < N_symbols; ip++) {
       printf("#");
     }
-    printf("%*s| %i%% ", prog_max - N_symbols, "", (int)(100.*(i+1)/(N_perturb) + 0.5));
+    printf("%*s| %i%% ", prog_max - N_symbols, "", (int)(100.*(k+1)/(N_games) + 0.5));
     fflush(stdout);
   }
   printf("\n");
   
   // Write the statistics into a file
-  FILE* f = fopen("../statistics/stats_pert_qplayer.csv", "wb");
-  fprintf(f, "%d,%d,%d", N_perturb, N_games, N_rows);
+  FILE* f = fopen("../statistics/stats_pert.csv", "wb");
+  fprintf(f, "%d,%lf,%d,%d", N_perturb, perturb_max, N_games, N_rows);
   for (int i = 0; i < N_rows; i++)
     fprintf(f, ",%d", rows_init[i]);
   fprintf(f, "\n");

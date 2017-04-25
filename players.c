@@ -405,6 +405,18 @@ double prob_nimsum(int* rows, int N_rows, int total_sticks, int phi, double pert
 
 void q_player(move_t* res, int* rows, int N_rows, double q, int total_sticks, double perturb) {
   
+  // See if a winning move is possible
+  for (int i = 0; i < N_rows; i++) {
+    if (rows[i] == 0)
+      continue;
+    if (rows[i] == total_sticks) {
+      res->row = i;
+      res->sticks = rows[i];
+      return;
+    }
+    break;
+  }
+  
   // Initialize res with a random move
   do {
     res->row = (double)N_rows*rand()/RAND_MAX;
