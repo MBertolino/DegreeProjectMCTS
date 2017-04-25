@@ -11,11 +11,11 @@
 #define C_GREEN  "\x1B[32m"
 
 // Choose which game to play: 0 = normal, (0 1] = perturbed
-double perturb = ;
+double perturb = 0.3;
 
 // Define players: Human = 0, p = 1, q = 2, s = 3, x = 4, r = 5
-#define PLAYER1 1
-#define PLAYER2 2 // <-- change this value
+#define PLAYER1 3
+#define PLAYER2 4 // <-- change this value
 
 
 int main(int argc, char* argv[]) {
@@ -50,12 +50,12 @@ int main(int argc, char* argv[]) {
   fflush(stdout);
   
   // Simulation parameters
-  int N_vals1 = 100;
+  int N_vals1 = 0;
   int N_vals2 = 0;
-  int N_games = 1000;
+  int N_games = 100;
   
   // Allocate memory
-  int** wins = (int**)malloc((N_vals1+1)*sizeof(int*));
+  int **wins = (int**)malloc((N_vals1+1)*sizeof(int*));
   for (int i = 0; i <= N_vals1; i++)
     wins[i] = (int*)malloc((N_vals2+1)*sizeof(int));
   int *rows_init = (int*)malloc(N_rows*sizeof(int));
@@ -63,8 +63,8 @@ int main(int argc, char* argv[]) {
   
   // Create the initial board
   for (int i = 0; i < N_rows; i++) {
-    //rows_init[i] = 3 + 2*i;
-    rows_init[i] = 1.5 + 0.5*i; // good for q-player
+    rows_init[i] = 3 + 2*i;
+    //rows_init[i] = 1.5 + 0.5*i; // good for q-player
   }
   
   // Begin simulations

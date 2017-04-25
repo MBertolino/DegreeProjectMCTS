@@ -3,12 +3,17 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
+#include <string.h>
 #include "players.h"
 
 // Define colors
 #define C_NORMAL "\x1B[0m"
 #define C_RED    "\x1B[31m"
 #define C_GREEN  "\x1B[32m"
+
+// Define players: Human = 0, p = 1, q = 2, s = 3, x = 4, r = 5
+#define PLAYER1 3
+#define PLAYER2 4 // <-- change this value
 
 
 int main(int argc, char* argv[]) {
@@ -71,14 +76,38 @@ int main(int argc, char* argv[]) {
       while (1) {
         player = 3 - player;
 
-        // Player 1
-        if (player == 1) {
-          p_player(res, rows, N_rows, 1, total_sticks);
-
-        // Player 2
-        } else {
-          q_player(res, rows, N_rows, 1, total_sticks, perturb_max*i/N_perturb);
-        }
+          // Player 1
+          if (player == 1) {
+            #if PLAYER1 == 0
+              h_player(res, rows, N_rows);
+            #elif PLAYER1 == 1
+              p_player(res, rows, N_rows, p1, total_sticks);
+            #elif PLAYER1 == 2
+              q_player(res, rows, N_rows, q1, total_sticks, i);
+            #elif PLAYER1 == 3
+              s_player(res, rows, N_rows, total_sticks, i);
+            #elif PLAYER1 == 4
+              x_player(res, rows, N_rows, total_sticks, i);
+            #elif PLAYER2 == 5
+              r_player(res, rows, N_rows, total_sticks);
+            #endif
+            
+          // Player 2
+          } else {
+            #if PLAYER2 == 0
+              h_player(res, rows, N_rows);
+            #elif PLAYER2 == 1
+              p_player(res, rows, N_rows, p2, total_sticks);
+            #elif PLAYER2 == 2
+              q_player(res, rows, N_rows, q2, total_sticks, i);
+            #elif PLAYER2 == 3
+              s_player(res, rows, N_rows, total_sticks, i);
+            #elif PLAYER2 == 4
+              x_player(res, rows, N_rows, total_sticks, i);
+            #elif PLAYER2 == 5
+              r_player(res, rows, N_rows, total_sticks);
+            #endif
+          }
 
         // Randomly perturb board
         perturb_board(N_rows, rows, &total_sticks, perturb_max*i/N_perturb);
@@ -107,7 +136,40 @@ int main(int argc, char* argv[]) {
   printf("\n");
   
   // Write the statistics into a file
-  FILE* f = fopen("../statistics/stats_pert.csv", "wb");
+  char str[10] = "";
+  int p_to_print = 0;
+  for (int i = 0; i < 2; i++) {
+    if (i == 0) {
+      p_to_print = PLAYER1;
+    } else {
+      p_to_print = PLAYER2;
+    }
+    switch (p_to_print) {
+      case 0:
+        strcat(str, "h");
+        break;
+      case 1:
+        strcat(str, "p");
+        break;
+      case 2:
+        strcat(str, "q");
+        break;
+      case 3:
+        strcat(str, "s");
+        break;
+      case 4:
+        strcat(str, "x");
+        break;
+      case 5:
+        strcat(str, "r");
+        break;
+    }
+  }
+  char str2[80];
+  strcat(str2, "../statistics/stats_");
+  strcat(str2, str);
+  strcat(str2, "_pert.csv");
+  FILE* f = fopen(str2, "wb");
   fprintf(f, "%d,%lf,%d,%d", N_perturb, perturb_max, N_games, N_rows);
   for (int i = 0; i < N_rows; i++)
     fprintf(f, ",%d", rows_init[i]);

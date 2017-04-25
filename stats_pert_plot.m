@@ -1,10 +1,13 @@
 clear;
 
+% Player
+player = 'sx';
+
 % If the filename has some extension in the end
-extension = '_b';
+extension = '';
 
 % Import data
-filename = ['../statistics/stats_pert' extension '.csv'];
+filename = ['../statistics/stats_' player '_pert' extension '.csv'];
 data = csvread(filename);
 
 % Game parameters
@@ -21,7 +24,7 @@ end
 stats = data(2:end, 1);
 
 % Display game parameters
-fprintf(['\nq-player:\n']);
+fprintf(['\n%s-player:\n'], player(2));
 fprintf(['  N_perturb = ' num2str(N_perturb) '\n']);
 fprintf(['  N_games = ' num2str(N_games) '\n']);
 fprintf(['  N_rows  = ' num2str(N_rows) '\n\n']);
@@ -45,7 +48,7 @@ x_vals = 0:step:(perturb_max - step);
 plot(x_vals, stats, '*k');
 ylim([(min(stats) - 0.1) (max(stats) + 0.1)]);
 grid on;
-title(['Win rate (q-player)']);
+title(['Win rate (' player(2) '-player)']);
 xlabel('perturb');
 ylabel('win rate');
 
