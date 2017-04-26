@@ -1,7 +1,7 @@
 clear;
 
 % Player
-player = 'ps';
+player = 'xp';
 
 % If the filename has some extension in the end
 extension = '';
@@ -15,10 +15,11 @@ perturb = data(1, 1);
 N_vals1 = data(1, 2);
 N_vals2 = data(1, 3);
 N_games = data(1, 4);
-N_rows = data(1, 5);
+c_max = data(1, 5);
+N_rows = data(1, 6);
 rows = zeros(N_rows, 1);
 for k = 1:N_rows
-    rows(k) = data(1, 5+k);
+    rows(k) = data(1, 6+k);
 end
 
 % Statistics
@@ -48,10 +49,19 @@ if ~strcmp(player, 'pp')
     N_vals = length(stats);
     step = 1/(N_vals-1);
     
+    % x-vector
+    x_vals = 0:step:1;
+    if player(1) == 'x'
+        x_vals = 10.^(x_vals*log10(c_max + 1));
+    end
+    
     % Plot
     figure;
-    x_vals = 0:step:1;
-    plot(x_vals, stats, '*b');
+    if player(1) ~= 'x'
+        plot(x_vals, stats, '*b');
+    else
+        semilogx(x_vals, stats, '*b');
+    end
     grid on;
     title([player(1) ' vs ' player(2)]);
     ylabel(['win rate (' player(2) '-player)']);

@@ -16,12 +16,14 @@
 double perturb = 0.3;
 
 // Define players: Human = 0, p = 1, q = 2, s = 3, x = 4, r = 5
-#define PLAYER1 1
-#define PLAYER2 4 // <-- change this value
+#define PLAYER1 4
+#define PLAYER2 1 // <-- change this value
 
-// c-parameter for the x-player
-double c1_max = 10000;
-double c2_max = 10000;
+// p-, q- and c-values
+double c_max = 10000;
+double p2 = 1;
+double q2 = 1;
+double c2 = 100;
 
 int main(int argc, char* argv[]) {
   
@@ -55,7 +57,7 @@ int main(int argc, char* argv[]) {
   fflush(stdout);
   
   // Simulation parameters
-  int N_vals1 = 0;
+  int N_vals1 = 10;
   int N_vals2 = 0;
   int N_games = 100;
   
@@ -78,7 +80,8 @@ int main(int argc, char* argv[]) {
             
       // p-value and q-value
       double var1 = (double)i/N_vals1;
-      double var2 = (double)i/N_vals2;
+      if (N_vals2 > 0)
+        p2 = (double)i/N_vals2;
       
       // Play N_games
       for (int k = 0; k < N_games; k++) {
@@ -101,7 +104,7 @@ int main(int argc, char* argv[]) {
               case 1: p_player(res, rows, N_rows, total_sticks, var1); break;
               case 2: q_player(res, rows, N_rows, total_sticks, perturb, var1); break;
               case 3: s_player(res, rows, N_rows, total_sticks, perturb); break;
-              case 4: x_player(res, rows, N_rows, total_sticks, perturb, pow(10, var1*log10(c1_max + 1) - 1)); break;
+              case 4: x_player(res, rows, N_rows, total_sticks, perturb, pow(10, var1*log10(c_max + 1) - 1)); break;
               case 5: r_player(res, rows, N_rows, total_sticks); break;
             }
             
@@ -109,10 +112,10 @@ int main(int argc, char* argv[]) {
           } else {
             switch (PLAYER2) {
               case 0: h_player(res, rows, N_rows); break;
-              case 1: p_player(res, rows, N_rows, total_sticks, var1); break;
-              case 2: q_player(res, rows, N_rows, total_sticks, perturb, var1); break;
+              case 1: p_player(res, rows, N_rows, total_sticks, p2); break;
+              case 2: q_player(res, rows, N_rows, total_sticks, perturb, p2); break;
               case 3: s_player(res, rows, N_rows, total_sticks, perturb); break;
-              case 4: x_player(res, rows, N_rows, total_sticks, perturb, pow(10, var2*log10(c2_max + 1) - 1)); break;
+              case 4: x_player(res, rows, N_rows, total_sticks, perturb, c2); break;
               case 5: r_player(res, rows, N_rows, total_sticks); break;
             }
           }
@@ -166,7 +169,7 @@ int main(int argc, char* argv[]) {
   strcat(str, ".csv");
   
   FILE* f = fopen(str, "wb");
-  fprintf(f, "%lf,%d,%d,%d,%d", perturb, N_vals1, N_vals2, N_games, N_rows);
+  fprintf(f, "%lf,%d,%d,%d,%lf,%d", perturb, N_vals1, N_vals2, N_games, c_max, N_rows);
   for (int i = 0; i < N_rows; i++)
     fprintf(f, ",%d", rows_init[i]);
   fprintf(f, "\n");
@@ -189,7 +192,4 @@ int main(int argc, char* argv[]) {
   free(wins);
   return 0;
 }
-
-
-
 

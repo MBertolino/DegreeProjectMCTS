@@ -36,3 +36,4 @@ nim_stats.o: nim_stats.c players.c players.h structs.h
 
 clean:
 	$(RM) $(NIM) $(STATS) $(PERT) *.o
+

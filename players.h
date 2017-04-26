@@ -23,3 +23,4 @@ void h_player(move_t* res, int* rows, int N_rows);
 
 // The r-player
 void r_player(move_t* res, int* rows, int N_rows, int total_sticks);
+

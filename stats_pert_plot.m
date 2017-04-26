@@ -45,7 +45,7 @@ step = perturb_max/N_perturb;
 % Plot
 figure;
 x_vals = 0:step:(perturb_max - step);
-plot(x_vals, stats, '*k');
+plot(x_vals, stats, '*b');
 ylim([(min(stats) - 0.1) (max(stats) + 0.1)]);
 grid on;
 title([player(1) ' vs ' player(2)]);
