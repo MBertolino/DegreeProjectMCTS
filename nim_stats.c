@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
+#include <string.h>
 #include "players.h"
 
 // Define colors
@@ -70,21 +71,13 @@ int main(int argc, char* argv[]) {
   // Begin simulations
   for (int i = 0; i <= N_vals1; i++) {
     for (int j = 0; j <= N_vals2; j++) {
-      
-      // p-value of the p-players
-      #if PLAYER1 == 1
-        double p1 = (double)i/N_vals1;
+            
+      // p-value and q-value
+      # if PLAYER1 == 1 || PLAYER1 == 2
+        double var1 = (double)i/N_vals1;
       #endif
-      #if PLAYER2 == 1
-        double p2 = (double)j/N_vals2;
-      #endif
-      
-      // q-value of the q-players
-      #if PLAYER1 == 2
-        double q1 = (double)i/N_vals1;
-      #endif
-      #if PLAYER2 == 2
-        double q2 = 1;//(double)j/N_vals2;
+      #if PLAYER2 == 1 || PLAYER2 == 2
+        double var2 = (double)i/N_vals2;
       #endif
       
       // c parameter for the x-player
@@ -95,6 +88,7 @@ int main(int argc, char* argv[]) {
         double c2 = 1;
       #endif
       
+      // Play N_games
       for (int k = 0; k < N_games; k++) {
         
         // Create the board
@@ -113,9 +107,9 @@ int main(int argc, char* argv[]) {
             #if PLAYER1 == 0
               h_player(res, rows, N_rows);
             #elif PLAYER1 == 1
-              p_player(res, rows, N_rows, total_sticks, p1);
+              p_player(res, rows, N_rows, total_sticks, var1);
             #elif PLAYER1 == 2
-              q_player(res, rows, N_rows, total_sticks, perturb, q1);
+              q_player(res, rows, N_rows, total_sticks, perturb, var1);
             #elif PLAYER1 == 3
               s_player(res, rows, N_rows, total_sticks, perturb);
             #elif PLAYER1 == 4
@@ -129,9 +123,9 @@ int main(int argc, char* argv[]) {
             #if PLAYER2 == 0
               h_player(res, rows, N_rows);
             #elif PLAYER2 == 1
-              p_player(res, rows, N_rows, total_sticks, p2);
+              p_player(res, rows, N_rows, total_sticks, var2);
             #elif PLAYER2 == 2
-              q_player(res, rows, N_rows, total_sticks, perturb, q2);
+              q_player(res, rows, N_rows, total_sticks, perturb, var2);
             #elif PLAYER2 == 3
               s_player(res, rows, N_rows, total_sticks, perturb);
             #elif PLAYER2 == 4
@@ -169,19 +163,30 @@ int main(int argc, char* argv[]) {
   printf("\n");
   
   // Write the statistics into a file
-  #if PLAYER2 == 0
-    FILE* f = fopen("../statistics/stats_hplayer.csv", "wb");
-  #elif PLAYER2 == 1
-    FILE* f = fopen("../statistics/stats_pplayer.csv", "wb");
-  #elif PLAYER2 == 2
-    FILE* f = fopen("../statistics/stats_qplayer.csv", "wb");
-  #elif PLAYER2 == 3
-    FILE* f = fopen("../statistics/stats_splayer.csv", "wb");
-  #elif PLAYER2 == 4
-    FILE* f = fopen("../statistics/stats_xplayer.csv", "wb");
-  #elif PLAYER2 == 5
-    FILE* f = fopen("../statistics/stats_rplayer.csv", "wb");
-  #endif
+  char str[10] = "";
+  switch (PLAYER1) {
+    case 0: strcat(str, "h"); break;
+    case 1: strcat(str, "p"); break;
+    case 2: strcat(str, "q"); break;
+    case 3: strcat(str, "s"); break;
+    case 4: strcat(str, "x"); break;
+    case 5: strcat(str, "r"); break;
+  }
+  switch (PLAYER2) {
+    case 0: strcat(str, "h"); break;
+    case 1: strcat(str, "p"); break;
+    case 2: strcat(str, "q"); break;
+    case 3: strcat(str, "s"); break;
+    case 4: strcat(str, "x"); break;
+    case 5: strcat(str, "r"); break;
+  }
+  
+  char str2[80];
+  strcat(str2, "../statistics/stats_");
+  strcat(str2, str);
+  strcat(str2, ".csv");
+  FILE* f = fopen(str2, "wb");
+  
   fprintf(f, "%lf,%d,%d,%d,%d", perturb, N_vals1, N_vals2, N_games, N_rows);
   for (int i = 0; i < N_rows; i++)
     fprintf(f, ",%d", rows_init[i]);

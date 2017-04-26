@@ -15,20 +15,12 @@
 #define PLAYER1 3
 #define PLAYER2 4 // <-- change this value
 
-// p-value of the p-players
-#if PLAYER1 == 1
-  double p1 = 1;
+// p-value and q-value
+# if PLAYER1 == 1 || PLAYER1 == 2
+  double var1 = (double)i/N_vals1;
 #endif
-#if PLAYER2 == 1
-  double p2 = 1;
-#endif
-
-// q-value of the q-players
-#if PLAYER1 == 2
-  double q1 = 1;
-#endif
-#if PLAYER2 == 2
-  double q2 = 1;
+#if PLAYER2 == 1 || PLAYER2 == 2
+  double var2 = (double)i/N_vals2;
 #endif
 
 // c parameter for the x-player
@@ -106,9 +98,9 @@ int main(int argc, char* argv[]) {
             #if PLAYER1 == 0
               h_player(res, rows, N_rows);
             #elif PLAYER1 == 1
-              p_player(res, rows, N_rows, total_sticks, p1);
+              p_player(res, rows, N_rows, total_sticks, var1);
             #elif PLAYER1 == 2
-              q_player(res, rows, N_rows, total_sticks, perturb_max*i/N_perturb, q1);
+              q_player(res, rows, N_rows, total_sticks, perturb_max*i/N_perturb, var1);
             #elif PLAYER1 == 3
               s_player(res, rows, N_rows, total_sticks, perturb_max*i/N_perturb);
             #elif PLAYER1 == 4
@@ -122,9 +114,9 @@ int main(int argc, char* argv[]) {
             #if PLAYER2 == 0
               h_player(res, rows, N_rows);
             #elif PLAYER2 == 1
-              p_player(res, rows, N_rows, total_sticks, p2);
+              p_player(res, rows, N_rows, total_sticks, var2);
             #elif PLAYER2 == 2
-              q_player(res, rows, N_rows, total_sticks, perturb_max*i/N_perturb, q2);
+              q_player(res, rows, N_rows, total_sticks, perturb_max*i/N_perturb, var2);
             #elif PLAYER2 == 3
               s_player(res, rows, N_rows, total_sticks, perturb_max*i/N_perturb);
             #elif PLAYER2 == 4
@@ -162,34 +154,23 @@ int main(int argc, char* argv[]) {
   
   // Write the statistics into a file
   char str[10] = "";
-  int p_to_print = 0;
-  for (int i = 0; i < 2; i++) {
-    if (i == 0) {
-      p_to_print = PLAYER1;
-    } else {
-      p_to_print = PLAYER2;
-    }
-    switch (p_to_print) {
-      case 0:
-        strcat(str, "h");
-        break;
-      case 1:
-        strcat(str, "p");
-        break;
-      case 2:
-        strcat(str, "q");
-        break;
-      case 3:
-        strcat(str, "s");
-        break;
-      case 4:
-        strcat(str, "x");
-        break;
-      case 5:
-        strcat(str, "r");
-        break;
-    }
+  switch (PLAYER1) {
+    case 0: strcat(str, "h"); break;
+    case 1: strcat(str, "p"); break;
+    case 2: strcat(str, "q"); break;
+    case 3: strcat(str, "s"); break;
+    case 4: strcat(str, "x"); break;
+    case 5: strcat(str, "r"); break;
   }
+  switch (PLAYER2) {
+    case 0: strcat(str, "h"); break;
+    case 1: strcat(str, "p"); break;
+    case 2: strcat(str, "q"); break;
+    case 3: strcat(str, "s"); break;
+    case 4: strcat(str, "x"); break;
+    case 5: strcat(str, "r"); break;
+  }
+  
   char str2[80];
   strcat(str2, "../statistics/stats_pert_");
   strcat(str2, str);
