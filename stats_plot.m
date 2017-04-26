@@ -1,13 +1,13 @@
 clear;
 
 % Player
-player = 'x';
+player = 'ps';
 
 % If the filename has some extension in the end
 extension = '';
 
 % Import data
-filename = ['../statistics/stats_' player 'player' extension '.csv'];
+filename = ['../statistics/stats_' player extension '.csv'];
 data = csvread(filename);
 
 % Game parameters
@@ -25,7 +25,7 @@ end
 stats = data(2:end, 1:(N_vals2+1));
 
 % Display game parameters
-fprintf(['\n' player '-player:\n']);
+fprintf(['\n' player(1) ' vs ' player(2) ':\n']);
 fprintf(['  perturb = ' num2str(perturb) '\n']);
 fprintf(['  N_vals1 = ' num2str(N_vals1) '\n']);
 fprintf(['  N_vals2 = ' num2str(N_vals2) '\n']);
@@ -42,7 +42,7 @@ end
 fprintf('\n');
 
 %% Regular plot
-if player ~= 'p'
+if ~strcmp(player, 'pp')
     
     % Data
     N_vals = length(stats);
@@ -52,14 +52,22 @@ if player ~= 'p'
     figure;
     x_vals = 0:step:1;
     plot(x_vals, stats, '*b');
-    title(['Win rate (' player '-player)']);
-    xlabel('p-value');
-    ylabel('win rate');
-    ylim([0 1])
+    grid on;
+    title([player(1) ' vs ' player(2)]);
+    ylabel(['win rate (' player(2) '-player)']);
+    ylim([0 1]);
+    switch player(1)
+        case 'p'
+            xlabel('p-value')
+        case 'q'
+            xlabel('q-value')
+        case 'x'
+            xlabel('c')
+    end
 end
 
 %% Heatmap
-if player == 'p'
+if strcmp(player, 'pp')
     
     % Data
     stats = 1 - stats;
@@ -75,8 +83,8 @@ if player == 'p'
     imagesc(flipud(stats));
     colorbar;
     title('Win rate of player 1');
-    xlabel('p2');
-    ylabel('p1');
+    xlabel('p_{2}');
+    ylabel('p_{1}');
     
     % Contour lines
     hold on;

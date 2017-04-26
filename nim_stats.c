@@ -16,7 +16,7 @@ double perturb = 0.3;
 
 // Define players: Human = 0, p = 1, q = 2, s = 3, x = 4, r = 5
 #define PLAYER1 1
-#define PLAYER2 2 // <-- change this value
+#define PLAYER2 4 // <-- change this value
 
 
 int main(int argc, char* argv[]) {
@@ -163,7 +163,8 @@ int main(int argc, char* argv[]) {
   printf("\n");
   
   // Write the statistics into a file
-  char str[10] = "";
+  char str[80] = "";
+  strcat(str, "../statistics/stats_");
   switch (PLAYER1) {
     case 0: strcat(str, "h"); break;
     case 1: strcat(str, "p"); break;
@@ -180,13 +181,9 @@ int main(int argc, char* argv[]) {
     case 4: strcat(str, "x"); break;
     case 5: strcat(str, "r"); break;
   }
+  strcat(str, ".csv");
   
-  char str2[80];
-  strcat(str2, "../statistics/stats_");
-  strcat(str2, str);
-  strcat(str2, ".csv");
-  FILE* f = fopen(str2, "wb");
-  
+  FILE* f = fopen(str, "wb");
   fprintf(f, "%lf,%d,%d,%d,%d", perturb, N_vals1, N_vals2, N_games, N_rows);
   for (int i = 0; i < N_rows; i++)
     fprintf(f, ",%d", rows_init[i]);

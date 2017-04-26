@@ -24,7 +24,7 @@ end
 stats = data(2:end, 1);
 
 % Display game parameters
-fprintf('\n%s-player:\n', player(2));
+fprintf(['\n' player(1) ' vs ' player(2) ':\n']);
 fprintf(['  N_perturb = ' num2str(N_perturb) '\n']);
 fprintf(['  N_games = ' num2str(N_games) '\n']);
 fprintf(['  N_rows  = ' num2str(N_rows) '\n\n']);
@@ -48,8 +48,8 @@ x_vals = 0:step:(perturb_max - step);
 plot(x_vals, stats, '*k');
 ylim([(min(stats) - 0.1) (max(stats) + 0.1)]);
 grid on;
-title(['Win rate (' player(2) '-player)']);
-xlabel('perturb');
-ylabel('win rate');
+title([player(1) ' vs ' player(2)]);
+xlabel('r');
+ylabel(['win rate (' player(2) '-player)']);
 
 

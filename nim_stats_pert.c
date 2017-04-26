@@ -153,7 +153,8 @@ int main(int argc, char* argv[]) {
   printf("\n");
   
   // Write the statistics into a file
-  char str[10] = "";
+  char str[80] = "";
+  strcat(str, "../statistics/stats_pert_");
   switch (PLAYER1) {
     case 0: strcat(str, "h"); break;
     case 1: strcat(str, "p"); break;
@@ -170,12 +171,9 @@ int main(int argc, char* argv[]) {
     case 4: strcat(str, "x"); break;
     case 5: strcat(str, "r"); break;
   }
+  strcat(str, ".csv");
   
-  char str2[80];
-  strcat(str2, "../statistics/stats_pert_");
-  strcat(str2, str);
-  strcat(str2, ".csv");
-  FILE* f = fopen(str2, "wb");
+  FILE* f = fopen(str, "wb");
   fprintf(f, "%d,%lf,%d,%d", N_perturb, perturb_max, N_games, N_rows);
   for (int i = 0; i < N_rows; i++)
     fprintf(f, ",%d", rows_init[i]);
