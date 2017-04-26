@@ -33,10 +33,10 @@
 
 // c parameter for the x-player
 #if PLAYER1 == 4
-  double c1 = 1;
+  double c1 = 100;
 #endif
 #if PLAYER2 == 4
-  double c2 = 1;
+  double c2 = 100;
 #endif
 
 
@@ -73,7 +73,7 @@ int main(int argc, char* argv[]) {
   
   // Simulation parameters
   int N_perturb = 20;
-  int N_games = 5000;
+  int N_games = 500;
   double perturb_max = 0.7;
   
   // Allocate memory
@@ -191,9 +191,9 @@ int main(int argc, char* argv[]) {
     }
   }
   char str2[80];
-  strcat(str2, "../statistics/stats_");
+  strcat(str2, "../statistics/stats_pert_");
   strcat(str2, str);
-  strcat(str2, "_pert.csv");
+  strcat(str2, "_c100_c.csv");
   FILE* f = fopen(str2, "wb");
   fprintf(f, "%d,%lf,%d,%d", N_perturb, perturb_max, N_games, N_rows);
   for (int i = 0; i < N_rows; i++)

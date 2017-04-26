@@ -1,13 +1,13 @@
 clear;
 
 % Player
-player = 'pq';
+player = 'sx';
 
 % If the filename has some extension in the end
-extension = '';
+extension = '_c100_a';
 
 % Import data
-filename = ['../statistics/stats_' player '_pert' extension '.csv'];
+filename = ['../statistics/stats_pert_' player extension '.csv'];
 data = csvread(filename);
 
 % Game parameters
