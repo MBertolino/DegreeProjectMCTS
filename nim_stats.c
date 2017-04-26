@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <time.h>
 #include <string.h>
+#include <math.h>
 #include "players.h"
 
 // Define colors
@@ -100,7 +101,7 @@ int main(int argc, char* argv[]) {
               case 1: p_player(res, rows, N_rows, total_sticks, var1); break;
               case 2: q_player(res, rows, N_rows, total_sticks, perturb, var1); break;
               case 3: s_player(res, rows, N_rows, total_sticks, perturb); break;
-              case 4: x_player(res, rows, N_rows, total_sticks, perturb, c1); break;
+              case 4: x_player(res, rows, N_rows, total_sticks, perturb, pow(10, var1*log10(c1_max + 1) - 1)); break;
               case 5: r_player(res, rows, N_rows, total_sticks); break;
             }
             
@@ -111,7 +112,7 @@ int main(int argc, char* argv[]) {
               case 1: p_player(res, rows, N_rows, total_sticks, var1); break;
               case 2: q_player(res, rows, N_rows, total_sticks, perturb, var1); break;
               case 3: s_player(res, rows, N_rows, total_sticks, perturb); break;
-              case 4: x_player(res, rows, N_rows, total_sticks, perturb, var2); break;
+              case 4: x_player(res, rows, N_rows, total_sticks, perturb, pow(10, var2*log10(c2_max + 1) - 1)); break;
               case 5: r_player(res, rows, N_rows, total_sticks); break;
             }
           }

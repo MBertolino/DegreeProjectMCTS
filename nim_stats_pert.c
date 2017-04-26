@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <time.h>
 #include <string.h>
+#include <math.h>
 #include "players.h"
 
 // Define colors
@@ -19,9 +20,9 @@
 double var1 = 0.5;
 double var2 = 0.5;
 
-// c parameter for the x-player
-double c1 = 1000;
-double c2 = 1000;
+// c-parameter for the x-player
+double c1_max = 10000;
+double c2_max = 10000;
 
 
 int main(int argc, char* argv[]) {
@@ -92,7 +93,7 @@ int main(int argc, char* argv[]) {
               case 1: p_player(res, rows, N_rows, total_sticks, var1); break;
               case 2: q_player(res, rows, N_rows, total_sticks, perturb_max*i/N_perturb, var1); break;
               case 3: s_player(res, rows, N_rows, total_sticks, perturb_max*i/N_perturb); break;
-              case 4: x_player(res, rows, N_rows, total_sticks, perturb_max*i/N_perturb, c1); break;
+              case 4: x_player(res, rows, N_rows, total_sticks, perturb_max*i/N_perturb, pow(10, var1*log10(c1_max + 1) - 1)); break;
               case 5: r_player(res, rows, N_rows, total_sticks); break;
             }
             
@@ -103,7 +104,7 @@ int main(int argc, char* argv[]) {
               case 1: p_player(res, rows, N_rows, total_sticks, var1); break;
               case 2: q_player(res, rows, N_rows, total_sticks, perturb_max*i/N_perturb, var1); break;
               case 3: s_player(res, rows, N_rows, total_sticks, perturb_max*i/N_perturb); break;
-              case 4: x_player(res, rows, N_rows, total_sticks, perturb_max*i/N_perturb, c2); break;
+              case 4: x_player(res, rows, N_rows, total_sticks, perturb_max*i/N_perturb, pow(10, var2*log10(c2_max + 1) - 1)); break;
               case 5: r_player(res, rows, N_rows, total_sticks); break;
             }
           }
