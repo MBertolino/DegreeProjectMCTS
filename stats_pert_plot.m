@@ -1,7 +1,7 @@
 clear;
 
 % Player
-player = 'sx';
+player = 'pq';
 
 % If the filename has some extension in the end
 extension = '';
@@ -24,7 +24,7 @@ end
 stats = data(2:end, 1);
 
 % Display game parameters
-fprintf(['\n%s-player:\n'], player(2));
+fprintf('\n%s-player:\n', player(2));
 fprintf(['  N_perturb = ' num2str(N_perturb) '\n']);
 fprintf(['  N_games = ' num2str(N_games) '\n']);
 fprintf(['  N_rows  = ' num2str(N_rows) '\n\n']);

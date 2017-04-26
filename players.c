@@ -3,8 +3,6 @@
 #include "structs.h"
 #include <math.h>
 
-double c = 1;
-
 
 // Randomly perturb the board
 void perturb_board(int N_rows, int* rows, int* total_sticks, double perturb) {
@@ -64,7 +62,7 @@ int random_move(int* rows, int N_rows, int total_sticks, int row, int sticks, do
 
 
 // Simulate the game with MCTS and see if this generates a win
-int monte_carlo(tree_t* tree, int* rows, int N_rows, double perturb, int perturb_board) {
+int monte_carlo(tree_t* tree, int* rows, int N_rows, double perturb, double c, int perturb_board) {
   int total_sticks = tree->total_sticks;
   
   // If the board is to be perturbed
@@ -89,7 +87,7 @@ int monte_carlo(tree_t* tree, int* rows, int N_rows, double perturb, int perturb
     rows_temp[0]++;
     
     // Traverse down the tree
-    int win = monte_carlo(tree->perturbation, rows_temp, N_rows, perturb, 0);
+    int win = monte_carlo(tree->perturbation, rows_temp, N_rows, perturb, c, 0);
     tree->wins += win;
     tree->plays++;
     
@@ -175,7 +173,7 @@ int monte_carlo(tree_t* tree, int* rows, int N_rows, double perturb, int perturb
     perturb_board = (double)rand()/RAND_MAX < perturb ? 1 : 0;
     
     // Traverse down the tree
-    int win = 1 - monte_carlo(max_child, rows_temp, N_rows, perturb, perturb_board);
+    int win = 1 - monte_carlo(max_child, rows_temp, N_rows, perturb, c, perturb_board);
     tree->wins += win;
     tree->plays++;
     
@@ -203,7 +201,7 @@ void free_tree(tree_t* tree, int N_rows) {
 
 
 // The extended s-player
-void x_player(move_t* res, int* rows, int N_rows, int total_sticks, double perturb) {
+void x_player(move_t* res, int* rows, int N_rows, int total_sticks, double perturb, double c) {
   
   // See if a winning move is possible
   for (int i = 0; i < N_rows; i++) {
@@ -230,7 +228,7 @@ void x_player(move_t* res, int* rows, int N_rows, int total_sticks, double pertu
   // Simulate games
   int N_sims = 1000;
   for (int k = 0; k < N_sims; k++) {
-    monte_carlo(root, rows, N_rows, perturb, -1);
+    monte_carlo(root, rows, N_rows, perturb, c, -1);
   }
   
   // Decide which move to make
@@ -300,7 +298,7 @@ void s_player(move_t* res, int* rows, int N_rows, int total_sticks, double pertu
 
 
 // The p-player
-void p_player(move_t* res, int* rows, int N_rows, double p, int total_sticks) {
+void p_player(move_t* res, int* rows, int N_rows, int total_sticks, double p) {
   
   // See if a winning move is possible
   for (int i = 0; i < N_rows; i++) {
@@ -403,7 +401,8 @@ double prob_nimsum(int* rows, int N_rows, int total_sticks, int phi, double pert
 }
 
 
-void q_player(move_t* res, int* rows, int N_rows, double q, int total_sticks, double perturb) {
+// The q-player
+void q_player(move_t* res, int* rows, int N_rows, int total_sticks, double perturb, double q) {
   
   // See if a winning move is possible
   for (int i = 0; i < N_rows; i++) {

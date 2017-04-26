@@ -14,8 +14,8 @@
 double perturb = 0.3;
 
 // Define players: Human = 0, p = 1, q = 2, s = 3, x = 4, r = 5
-#define PLAYER1 3
-#define PLAYER2 4 // <-- change this value
+#define PLAYER1 1
+#define PLAYER2 2 // <-- change this value
 
 
 int main(int argc, char* argv[]) {
@@ -87,6 +87,14 @@ int main(int argc, char* argv[]) {
         double q2 = 1;//(double)j/N_vals2;
       #endif
       
+      // c parameter for the x-player
+      #if PLAYER1 == 4
+        double c1 = 1;
+      #endif
+      #if PLAYER2 == 4
+        double c2 = 1;
+      #endif
+      
       for (int k = 0; k < N_games; k++) {
         
         // Create the board
@@ -105,13 +113,13 @@ int main(int argc, char* argv[]) {
             #if PLAYER1 == 0
               h_player(res, rows, N_rows);
             #elif PLAYER1 == 1
-              p_player(res, rows, N_rows, p1, total_sticks);
+              p_player(res, rows, N_rows, total_sticks, p1);
             #elif PLAYER1 == 2
-              q_player(res, rows, N_rows, q1, total_sticks, perturb);
+              q_player(res, rows, N_rows, total_sticks, perturb, q1);
             #elif PLAYER1 == 3
               s_player(res, rows, N_rows, total_sticks, perturb);
             #elif PLAYER1 == 4
-              x_player(res, rows, N_rows, total_sticks, perturb);
+              x_player(res, rows, N_rows, total_sticks, perturb, c1);
             #elif PLAYER2 == 5
               r_player(res, rows, N_rows, total_sticks);
             #endif
@@ -121,13 +129,13 @@ int main(int argc, char* argv[]) {
             #if PLAYER2 == 0
               h_player(res, rows, N_rows);
             #elif PLAYER2 == 1
-              p_player(res, rows, N_rows, p2, total_sticks);
+              p_player(res, rows, N_rows, total_sticks, p2);
             #elif PLAYER2 == 2
-              q_player(res, rows, N_rows, q2, total_sticks, perturb);
+              q_player(res, rows, N_rows, total_sticks, perturb, q2);
             #elif PLAYER2 == 3
               s_player(res, rows, N_rows, total_sticks, perturb);
             #elif PLAYER2 == 4
-              x_player(res, rows, N_rows, total_sticks, perturb);
+              x_player(res, rows, N_rows, total_sticks, perturb, c2);
             #elif PLAYER2 == 5
               r_player(res, rows, N_rows, total_sticks);
             #endif
