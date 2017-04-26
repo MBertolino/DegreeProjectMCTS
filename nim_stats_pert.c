@@ -16,20 +16,12 @@
 #define PLAYER2 4 // <-- change this value
 
 // p-value and q-value
-# if PLAYER1 == 1 || PLAYER1 == 2
-  double var1 = (double)i/N_vals1;
-#endif
-#if PLAYER2 == 1 || PLAYER2 == 2
-  double var2 = (double)i/N_vals2;
-#endif
+double var1 = 0.5;
+double var2 = 0.5;
 
 // c parameter for the x-player
-#if PLAYER1 == 4
-  double c1 = 1000;
-#endif
-#if PLAYER2 == 4
-  double c2 = 1000;
-#endif
+double c1 = 1000;
+double c2 = 1000;
 
 
 int main(int argc, char* argv[]) {
@@ -95,35 +87,25 @@ int main(int argc, char* argv[]) {
 
           // Player 1
           if (player == 1) {
-            #if PLAYER1 == 0
-              h_player(res, rows, N_rows);
-            #elif PLAYER1 == 1
-              p_player(res, rows, N_rows, total_sticks, var1);
-            #elif PLAYER1 == 2
-              q_player(res, rows, N_rows, total_sticks, perturb_max*i/N_perturb, var1);
-            #elif PLAYER1 == 3
-              s_player(res, rows, N_rows, total_sticks, perturb_max*i/N_perturb);
-            #elif PLAYER1 == 4
-              x_player(res, rows, N_rows, total_sticks, perturb_max*i/N_perturb, c1);
-            #elif PLAYER2 == 5
-              r_player(res, rows, N_rows, total_sticks);
-            #endif
+            switch (PLAYER1) {
+              case 0: h_player(res, rows, N_rows); break;
+              case 1: p_player(res, rows, N_rows, total_sticks, var1); break;
+              case 2: q_player(res, rows, N_rows, total_sticks, perturb_max*i/N_perturb, var1); break;
+              case 3: s_player(res, rows, N_rows, total_sticks, perturb_max*i/N_perturb); break;
+              case 4: x_player(res, rows, N_rows, total_sticks, perturb_max*i/N_perturb, c1); break;
+              case 5: r_player(res, rows, N_rows, total_sticks); break;
+            }
             
           // Player 2
           } else {
-            #if PLAYER2 == 0
-              h_player(res, rows, N_rows);
-            #elif PLAYER2 == 1
-              p_player(res, rows, N_rows, total_sticks, var2);
-            #elif PLAYER2 == 2
-              q_player(res, rows, N_rows, total_sticks, perturb_max*i/N_perturb, var2);
-            #elif PLAYER2 == 3
-              s_player(res, rows, N_rows, total_sticks, perturb_max*i/N_perturb);
-            #elif PLAYER2 == 4
-              x_player(res, rows, N_rows, total_sticks, perturb_max*i/N_perturb, c2);
-            #elif PLAYER2 == 5
-              r_player(res, rows, N_rows, total_sticks);
-            #endif
+            switch (PLAYER2) {
+              case 0: h_player(res, rows, N_rows); break;
+              case 1: p_player(res, rows, N_rows, total_sticks, var1); break;
+              case 2: q_player(res, rows, N_rows, total_sticks, perturb_max*i/N_perturb, var1); break;
+              case 3: s_player(res, rows, N_rows, total_sticks, perturb_max*i/N_perturb); break;
+              case 4: x_player(res, rows, N_rows, total_sticks, perturb_max*i/N_perturb, c2); break;
+              case 5: r_player(res, rows, N_rows, total_sticks); break;
+            }
           }
 
         // Randomly perturb board

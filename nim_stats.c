@@ -18,6 +18,9 @@ double perturb = 0.3;
 #define PLAYER1 1
 #define PLAYER2 4 // <-- change this value
 
+// c-parameter for the x-player
+double c1_max = 10000;
+double c2_max = 10000;
 
 int main(int argc, char* argv[]) {
   
@@ -67,26 +70,14 @@ int main(int argc, char* argv[]) {
     rows_init[i] = 3 + 2*i;
     //rows_init[i] = 1.5 + 0.5*i; // good for q-player
   }
-  
+
   // Begin simulations
   for (int i = 0; i <= N_vals1; i++) {
     for (int j = 0; j <= N_vals2; j++) {
             
       // p-value and q-value
-      # if PLAYER1 == 1 || PLAYER1 == 2
-        double var1 = (double)i/N_vals1;
-      #endif
-      #if PLAYER2 == 1 || PLAYER2 == 2
-        double var2 = (double)i/N_vals2;
-      #endif
-      
-      // c parameter for the x-player
-      #if PLAYER1 == 4
-        double c1 = 1;
-      #endif
-      #if PLAYER2 == 4
-        double c2 = 1;
-      #endif
+      double var1 = (double)i/N_vals1;
+      double var2 = (double)i/N_vals2;
       
       // Play N_games
       for (int k = 0; k < N_games; k++) {
@@ -104,35 +95,25 @@ int main(int argc, char* argv[]) {
           
           // Player 1
           if (player == 1) {
-            #if PLAYER1 == 0
-              h_player(res, rows, N_rows);
-            #elif PLAYER1 == 1
-              p_player(res, rows, N_rows, total_sticks, var1);
-            #elif PLAYER1 == 2
-              q_player(res, rows, N_rows, total_sticks, perturb, var1);
-            #elif PLAYER1 == 3
-              s_player(res, rows, N_rows, total_sticks, perturb);
-            #elif PLAYER1 == 4
-              x_player(res, rows, N_rows, total_sticks, perturb, c1);
-            #elif PLAYER2 == 5
-              r_player(res, rows, N_rows, total_sticks);
-            #endif
+            switch (PLAYER1) {
+              case 0: h_player(res, rows, N_rows); break;
+              case 1: p_player(res, rows, N_rows, total_sticks, var1); break;
+              case 2: q_player(res, rows, N_rows, total_sticks, perturb, var1); break;
+              case 3: s_player(res, rows, N_rows, total_sticks, perturb); break;
+              case 4: x_player(res, rows, N_rows, total_sticks, perturb, c1); break;
+              case 5: r_player(res, rows, N_rows, total_sticks); break;
+            }
             
           // Player 2
           } else {
-            #if PLAYER2 == 0
-              h_player(res, rows, N_rows);
-            #elif PLAYER2 == 1
-              p_player(res, rows, N_rows, total_sticks, var2);
-            #elif PLAYER2 == 2
-              q_player(res, rows, N_rows, total_sticks, perturb, var2);
-            #elif PLAYER2 == 3
-              s_player(res, rows, N_rows, total_sticks, perturb);
-            #elif PLAYER2 == 4
-              x_player(res, rows, N_rows, total_sticks, perturb, c2);
-            #elif PLAYER2 == 5
-              r_player(res, rows, N_rows, total_sticks);
-            #endif
+            switch (PLAYER2) {
+              case 0: h_player(res, rows, N_rows); break;
+              case 1: p_player(res, rows, N_rows, total_sticks, var1); break;
+              case 2: q_player(res, rows, N_rows, total_sticks, perturb, var1); break;
+              case 3: s_player(res, rows, N_rows, total_sticks, perturb); break;
+              case 4: x_player(res, rows, N_rows, total_sticks, perturb, var2); break;
+              case 5: r_player(res, rows, N_rows, total_sticks); break;
+            }
           }
           
           // Randomly perturb board
