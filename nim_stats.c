@@ -68,37 +68,17 @@ int main(int argc, char* argv[]) {
   int *rows_init = (int*)malloc(N_rows*sizeof(int));
   int *rows = (int*)malloc(N_rows*sizeof(int));
   
-  
-  // Index for random board
+  // Index when useing random board
   int *idx = (int*)malloc(N_rows*sizeof(int));
   int *idx_temp = (int*)malloc(N_rows*sizeof(int));
   int temp, jm = 0;
   int total_sticks = 8;
   int used_sticks = 0;
-  for (int im = 0; im < N_rows; im++)
-    idx_temp[im] = im;
-  
-  for (int im = 0; im < N_rows; im++) {
-    jm = im + rand()%(N_rows - im);
-    temp = idx_temp[im];
-    idx_temp[im] = idx_temp[jm];
-    idx_temp[jm] = temp;
-    idx[im] = idx_temp[im];
-    
-    // Add one stick to each heap
-    rows_init[im] = 1;
-  }
   
   // Create the initial board
-  for (int i = 0; i < N_rows; i++) {
+  //for (int i = 0; i < N_rows; i++)
     //rows_init[i] = 3 + 2*i;
     //rows_init[i] = 1.5 + 0.5*i; // good for q-player
-    rows_init[idx[i]] += (double)(total_sticks - used_sticks - (N_rows - (i+1)))*rand()/RAND_MAX;
-    used_sticks += rows_init[idx[i]];
-  }
-  for (int i = 0; i < N_rows; i++)
-    printf("rows_init[%i] = %i\n", i, rows_init[i]);
-  printf("\n");
   
   // Begin simulations
   for (int i = 0; i <= N_vals1; i++) {
@@ -118,9 +98,10 @@ int main(int argc, char* argv[]) {
           rows[im] = rows_init[im];
           total_sticks += rows[im];
         }*/
+        
+        // Random index
         total_sticks = 8;
         used_sticks = 0;
-        jm = 0;
         for (int im = 0; im < N_rows; im++)
           idx_temp[im] = im;
         
@@ -135,15 +116,12 @@ int main(int argc, char* argv[]) {
           rows[im] = 1;
         }
 
-        // Create the initial board
-        for (int im = 0; im < N_rows; im++) {
+        // Randomly fill the board
+        for (int im = 0; im < N_rows-1; im++) {
           rows[idx[im]] += (double)(total_sticks - used_sticks - (N_rows - (im+1)))*rand()/RAND_MAX;
           used_sticks += rows[idx[im]];
         }
-        
-        for (int im = 0; im < N_rows; im++)
-          printf("rows[%i] = %i\n", im, rows[im]);
-        printf("\n");
+        rows[idx[N_rows-1]] = total_sticks - used_sticks;
         
         // Choose which player to start
         int player = 1 + 2.*rand()/RAND_MAX;
