@@ -1,10 +1,10 @@
 clear;
 
 % Player
-player = 'sx';
+player = 'xs';
 
 % If the filename has some extension in the end
-extension = '_c100_a';
+extension = '';
 
 % Import data
 filename = ['../statistics/stats_pert_' player extension '.csv'];
@@ -45,7 +45,7 @@ step = perturb_max/N_perturb;
 % Plot
 figure;
 x_vals = 0:step:(perturb_max - step);
-plot(x_vals, stats, '*b');
+plot(x_vals, stats, '*r');
 ylim([(min(stats) - 0.1) (max(stats) + 0.1)]);
 grid on;
 title([player(1) ' vs ' player(2)]);

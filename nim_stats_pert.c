@@ -13,12 +13,12 @@
 #define C_GREEN  "\x1B[32m"
 
 // Define players: Human = 0, p = 1, q = 2, s = 3, x = 4, r = 5
-#define PLAYER1 3
-#define PLAYER2 4 // <-- change this value
+#define PLAYER1 1
+#define PLAYER2 2 // <-- change this value
 
 // p-value, q-value and exploration parameter c for the x-player
-double var1 = 0.5;
-double var2 = 0.5;
+double var1 = 1;
+double var2 = 1;
 
 
 int main(int argc, char* argv[]) {
@@ -54,7 +54,7 @@ int main(int argc, char* argv[]) {
   
   // Simulation parameters
   int N_perturb = 20;
-  int N_games = 500;
+  int N_games = 1000;
   double perturb_max = 0.7;
   
   // Allocate memory
@@ -63,10 +63,11 @@ int main(int argc, char* argv[]) {
   int *rows = (int*)malloc(N_rows*sizeof(int));
   
   // Create the initial board
-  for (int i = 0; i < N_rows; i++)
-    rows_init[i] = 3 + 2*i;
+  for (int i = 0; i < N_rows; i++) {
+    //rows_init[i] = 3 + 2*i;
     //rows_init[i] = 1.5 + 0.5*i; // good for q-player
-  
+  }
+    
   // Begin simulations
   for (int k = 0; k < N_games; k++) {
     for (int i = 0; i < N_perturb; i++) {

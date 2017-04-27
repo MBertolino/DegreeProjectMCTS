@@ -16,8 +16,8 @@
 double perturb = 0.3;
 
 // Define players: Human = 0, p = 1, q = 2, s = 3, x = 4, r = 5
-#define PLAYER1 4
-#define PLAYER2 1 // <-- change this value
+#define PLAYER1 3
+#define PLAYER2 4 // <-- change this value
 
 // p-, q- and c-values
 double c_max = 10000;
@@ -57,9 +57,9 @@ int main(int argc, char* argv[]) {
   fflush(stdout);
   
   // Simulation parameters
-  int N_vals1 = 10;
+  int N_vals1 = 50;
   int N_vals2 = 0;
-  int N_games = 100;
+  int N_games = 200;
   
   // Allocate memory
   int **wins = (int**)malloc((N_vals1+1)*sizeof(int*));
@@ -68,10 +68,31 @@ int main(int argc, char* argv[]) {
   int *rows_init = (int*)malloc(N_rows*sizeof(int));
   int *rows = (int*)malloc(N_rows*sizeof(int));
   
+  
+  // Index for random board
+  int *idx = (int*)malloc(N_rows*sizeof(int));
+  int *idx_temp = (int*)malloc(N_rows*sizeof(int));
+  for (int i = 0; i < N_rows; i++)
+    idx_temp[i] = i;
+
+  for (int i = 0; i < N_rows; i++) {
+    int j = i + rand()%(N_rows - i);
+    int temp = idx_temp[i];
+    idx_temp[i] = idx_temp[j];
+    idx_temp[j] = temp;
+
+    idx[i] = idx_temp[i];
+  }
+
+  for (int i = 0; i < N_rows; i++)
+    printf("idx[%d] = %i\n", i, idx[i]);
+  
   // Create the initial board
   for (int i = 0; i < N_rows; i++) {
     rows_init[i] = 3 + 2*i;
     //rows_init[i] = 1.5 + 0.5*i; // good for q-player
+    rows_init[i] = idx[i]; 
+    
   }
 
   // Begin simulations
