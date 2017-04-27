@@ -72,29 +72,34 @@ int main(int argc, char* argv[]) {
   // Index for random board
   int *idx = (int*)malloc(N_rows*sizeof(int));
   int *idx_temp = (int*)malloc(N_rows*sizeof(int));
-  for (int i = 0; i < N_rows; i++)
-    idx_temp[i] = i;
-
-  for (int i = 0; i < N_rows; i++) {
-    int j = i + rand()%(N_rows - i);
-    int temp = idx_temp[i];
-    idx_temp[i] = idx_temp[j];
-    idx_temp[j] = temp;
-
-    idx[i] = idx_temp[i];
+  int temp, jm = 0;
+  int total_sticks = 8;
+  int used_sticks = 0;
+  for (int im = 0; im < N_rows; im++)
+    idx_temp[im] = im;
+  
+  for (int im = 0; im < N_rows; im++) {
+    jm = im + rand()%(N_rows - im);
+    temp = idx_temp[im];
+    idx_temp[im] = idx_temp[jm];
+    idx_temp[jm] = temp;
+    idx[im] = idx_temp[im];
+    
+    // Add one stick to each heap
+    rows_init[im] = 1;
   }
-
-  for (int i = 0; i < N_rows; i++)
-    printf("idx[%d] = %i\n", i, idx[i]);
   
   // Create the initial board
   for (int i = 0; i < N_rows; i++) {
-    rows_init[i] = 3 + 2*i;
+    //rows_init[i] = 3 + 2*i;
     //rows_init[i] = 1.5 + 0.5*i; // good for q-player
-    rows_init[i] = idx[i]; 
-    
+    rows_init[idx[i]] += (double)(total_sticks - used_sticks - (N_rows - (i+1)))*rand()/RAND_MAX;
+    used_sticks += rows_init[idx[i]];
   }
-
+  for (int i = 0; i < N_rows; i++)
+    printf("rows_init[%i] = %i\n", i, rows_init[i]);
+  printf("\n");
+  
   // Begin simulations
   for (int i = 0; i <= N_vals1; i++) {
     for (int j = 0; j <= N_vals2; j++) {
@@ -102,18 +107,45 @@ int main(int argc, char* argv[]) {
       // p-value and q-value
       double var1 = (double)i/N_vals1;
       if (N_vals2 > 0)
-        p2 = (double)i/N_vals2;
+        p2 = (double)j/N_vals2;
       
       // Play N_games
       for (int k = 0; k < N_games; k++) {
         
         // Create the board
-        int total_sticks = 0;
-        for (int i = 0; i < N_rows; i++) {
-          rows[i] = rows_init[i];
-          total_sticks += rows[i];
+        /*int total_sticks = 0;
+        for (int im = 0; im < N_rows; im++) {
+          rows[im] = rows_init[im];
+          total_sticks += rows[im];
+        }*/
+        total_sticks = 8;
+        used_sticks = 0;
+        jm = 0;
+        for (int im = 0; im < N_rows; im++)
+          idx_temp[im] = im;
+        
+        for (int im = 0; im < N_rows; im++) {
+          jm = im + rand()%(N_rows - im);
+          temp = idx_temp[im];
+          idx_temp[im] = idx_temp[jm];
+          idx_temp[jm] = temp;
+          idx[im] = idx_temp[im];
+
+          // Add one stick to each heap
+          rows[im] = 1;
+        }
+
+        // Create the initial board
+        for (int im = 0; im < N_rows; im++) {
+          rows[idx[im]] += (double)(total_sticks - used_sticks - (N_rows - (im+1)))*rand()/RAND_MAX;
+          used_sticks += rows[idx[im]];
         }
         
+        for (int im = 0; im < N_rows; im++)
+          printf("rows[%i] = %i\n", im, rows[im]);
+        printf("\n");
+        
+        // Choose which player to start
         int player = 1 + 2.*rand()/RAND_MAX;
         while (1) {
           player = 3 - player;
@@ -125,7 +157,7 @@ int main(int argc, char* argv[]) {
               case 1: p_player(res, rows, N_rows, total_sticks, var1); break;
               case 2: q_player(res, rows, N_rows, total_sticks, perturb, var1); break;
               case 3: s_player(res, rows, N_rows, total_sticks, perturb); break;
-              case 4: x_player(res, rows, N_rows, total_sticks, perturb, pow(10, var1*log10(c_max + 1) - 1)); break;
+              case 4: x_player(res, rows, N_rows, total_sticks, perturb, pow(10, var1*log10(c_max + 1)) - 1); break;
               case 5: r_player(res, rows, N_rows, total_sticks); break;
             }
             

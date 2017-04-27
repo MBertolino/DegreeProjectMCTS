@@ -74,9 +74,9 @@ int main(int argc, char* argv[]) {
       
       // Create the board
       int total_sticks = 0;
-      for (int i = 0; i < N_rows; i++) {
-        rows[i] = rows_init[i];
-        total_sticks += rows[i];
+      for (int j = 0; j < N_rows; j++) {
+        rows[j] = rows_init[j];
+        total_sticks += rows[j];
       }
 
       int player = 1 + 2.*rand()/RAND_MAX;
