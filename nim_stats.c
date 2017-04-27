@@ -13,13 +13,14 @@
 #define C_GREEN  "\x1B[32m"
 
 // Choose which game to play: 0 = normal, (0 1] = perturbed
-double perturb = 0.3;
+double perturb = 0.2;
 
 // Define players: Human = 0, p = 1, q = 2, s = 3, x = 4, r = 5
-#define PLAYER1 3
-#define PLAYER2 4 // <-- change this value
+#define PLAYER1 4
+#define PLAYER2 1 // <-- change this value
 
 // p-, q- and c-values
+double c_min = .01;
 double c_max = 10000;
 double p2 = 1;
 double q2 = 1;
@@ -28,8 +29,8 @@ double c2 = 100;
 int main(int argc, char* argv[]) {
   
   // Number of input arguments
-  if (argc != 2) {
-    printf("Expected number of rows as input argument.\n");
+  if (argc != 3) {
+    printf("Usage: ./nim_stats N_rows total_sticks\n");
     return -1;
   }
   
@@ -37,6 +38,13 @@ int main(int argc, char* argv[]) {
   int N_rows = atoi(argv[1]);
   if (N_rows < 1) {
     printf("Number of rows must be > 0.\n");
+    return -1;
+  }
+  
+  // Total number of sticks
+  int total_sticks_init = atoi(argv[2]);
+  if (total_sticks_init < N_rows) {
+    printf("Total sticks cannot be smaller than N_rows.\n");
     return -1;
   }
   
@@ -57,28 +65,19 @@ int main(int argc, char* argv[]) {
   fflush(stdout);
   
   // Simulation parameters
-  int N_vals1 = 50;
+  int N_vals1 = 100;
   int N_vals2 = 0;
-  int N_games = 200;
+  int N_games = 1000;
   
   // Allocate memory
-  int **wins = (int**)malloc((N_vals1+1)*sizeof(int*));
+  int** wins = (int**)malloc((N_vals1+1)*sizeof(int*));
   for (int i = 0; i <= N_vals1; i++)
     wins[i] = (int*)malloc((N_vals2+1)*sizeof(int));
-  int *rows_init = (int*)malloc(N_rows*sizeof(int));
-  int *rows = (int*)malloc(N_rows*sizeof(int));
+  int* rows = (int*)malloc(N_rows*sizeof(int));
   
-  // Index when useing random board
-  int *idx = (int*)malloc(N_rows*sizeof(int));
-  int *idx_temp = (int*)malloc(N_rows*sizeof(int));
-  int temp, jm = 0;
-  int total_sticks = 8;
+  // Index when using random board
+  int* idx = (int*)malloc(N_rows*sizeof(int));
   int used_sticks = 0;
-  
-  // Create the initial board
-  //for (int i = 0; i < N_rows; i++)
-    //rows_init[i] = 3 + 2*i;
-    //rows_init[i] = 1.5 + 0.5*i; // good for q-player
   
   // Begin simulations
   for (int i = 0; i <= N_vals1; i++) {
@@ -92,25 +91,19 @@ int main(int argc, char* argv[]) {
       // Play N_games
       for (int k = 0; k < N_games; k++) {
         
-        // Create the board
-        /*int total_sticks = 0;
-        for (int im = 0; im < N_rows; im++) {
-          rows[im] = rows_init[im];
-          total_sticks += rows[im];
-        }*/
-        
-        // Random index
-        total_sticks = 8;
+        /* Create a random board */
+        // Shuffle the indicies
+        int total_sticks = total_sticks_init;
         used_sticks = 0;
         for (int im = 0; im < N_rows; im++)
-          idx_temp[im] = im;
+          idx[im] = im;
         
+        int temp, jm = 0;
         for (int im = 0; im < N_rows; im++) {
           jm = im + rand()%(N_rows - im);
-          temp = idx_temp[im];
-          idx_temp[im] = idx_temp[jm];
-          idx_temp[jm] = temp;
-          idx[im] = idx_temp[im];
+          temp = idx[im];
+          idx[im] = idx[jm];
+          idx[jm] = temp;
 
           // Add one stick to each heap
           rows[im] = 1;
@@ -135,7 +128,7 @@ int main(int argc, char* argv[]) {
               case 1: p_player(res, rows, N_rows, total_sticks, var1); break;
               case 2: q_player(res, rows, N_rows, total_sticks, perturb, var1); break;
               case 3: s_player(res, rows, N_rows, total_sticks, perturb); break;
-              case 4: x_player(res, rows, N_rows, total_sticks, perturb, pow(10, var1*log10(c_max + 1)) - 1); break;
+              case 4: x_player(res, rows, N_rows, total_sticks, perturb, c_min*pow(10, var1*log10(c_max/c_min))); break;
               case 5: r_player(res, rows, N_rows, total_sticks); break;
             }
             
@@ -200,10 +193,7 @@ int main(int argc, char* argv[]) {
   strcat(str, ".csv");
   
   FILE* f = fopen(str, "wb");
-  fprintf(f, "%lf,%d,%d,%d,%lf,%d", perturb, N_vals1, N_vals2, N_games, c_max, N_rows);
-  for (int i = 0; i < N_rows; i++)
-    fprintf(f, ",%d", rows_init[i]);
-  fprintf(f, "\n");
+  fprintf(f, "%lf,%d,%d,%d,%d,%d,%lf,%lf\n", perturb, N_vals1, N_vals2, N_games, N_rows, total_sticks_init, c_min, c_max);
   for (int i = 0; i <= N_vals1; i++) {
     fprintf(f, "%lf", (double)wins[i][0]/N_games);
     for (int j = 1; j <= N_vals2; j++)
@@ -216,7 +206,6 @@ int main(int argc, char* argv[]) {
   
   // Free
   free(rows);
-  free(rows_init);
   free(res);
   for (int i = 0; i <= N_vals1; i++)
     free(wins[i]);

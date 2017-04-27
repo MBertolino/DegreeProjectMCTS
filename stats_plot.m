@@ -1,7 +1,7 @@
 clear;
 
 % Player
-player = 'xs';
+player = 'xp';
 
 % If the filename has some extension in the end
 extension = '';
@@ -15,32 +15,22 @@ perturb = data(1, 1);
 N_vals1 = data(1, 2);
 N_vals2 = data(1, 3);
 N_games = data(1, 4);
-c_max = data(1, 5);
-N_rows = data(1, 6);
-rows = zeros(N_rows, 1);
-for k = 1:N_rows
-    rows(k) = data(1, 6+k);
-end
+N_rows = data(1, 5);
+total_sticks = data(1, 6);
+c_min = data(1, 7);
+c_max = data(1, 8);
 
 % Statistics
 stats = data(2:end, 1:(N_vals2+1));
 
 % Display game parameters
 fprintf(['\n' player(1) ' vs ' player(2) ':\n']);
-fprintf(['  perturb = ' num2str(perturb) '\n']);
-fprintf(['  N_vals1 = ' num2str(N_vals1) '\n']);
-fprintf(['  N_vals2 = ' num2str(N_vals2) '\n']);
-fprintf(['  N_games = ' num2str(N_games) '\n']);
-fprintf(['  N_rows  = ' num2str(N_rows) '\n\n']);
-fprintf('Initial board:\n');
-for i = 1:N_rows
-    fprintf('  ');
-    for j = 1:rows(i)
-        fprintf('|');
-    end
-    fprintf('\n');
-end
-fprintf('\n');
+fprintf(['  perturb      = ' num2str(perturb) '\n']);
+fprintf(['  N_vals1      = ' num2str(N_vals1) '\n']);
+fprintf(['  N_vals2      = ' num2str(N_vals2) '\n']);
+fprintf(['  N_games      = ' num2str(N_games) '\n']);
+fprintf(['  N_rows       = ' num2str(N_rows) '\n']);
+fprintf(['  total_sticks = ' num2str(total_sticks) '\n\n']);
 
 %% Regular plot
 if ~strcmp(player, 'pp')
@@ -52,7 +42,7 @@ if ~strcmp(player, 'pp')
     % x-vector
     x_vals = 0:step:1;
     if player(1) == 'x'
-        x_vals = 10.^(x_vals*log10(c_max + 1));
+        x_vals = c_min*10.^(x_vals*log10(c_max/c_min));
     end
     
     % Plot

@@ -141,9 +141,9 @@ int monte_carlo(tree_t* tree, int* rows, int N_rows, double perturb, double c, i
     
     // Find the child with highest ucb
     tree_t* max_child = tree->children[0];
-    //double ucb_max = (double)max_child->wins/max_child->plays + c*sqrt(log(tree->plays)/max_child->plays);
+    double ucb_max = (double)max_child->wins/max_child->plays + c*sqrt(log(tree->plays)/max_child->plays);
     //double ucb_max = 2*max_child->wins - max_child->plays + c*sqrt(log(tree->plays)/max_child->plays);
-    double ucb_max = 2.*max_child->wins/max_child->plays - 1 + c*sqrt(log(tree->plays)/max_child->plays);
+    //double ucb_max = 2.*max_child->wins/max_child->plays - 1 + c*sqrt(log(tree->plays)/max_child->plays);
     double ucb;
     for (int i = 1; i < total_sticks; i++) {
       
@@ -154,9 +154,9 @@ int monte_carlo(tree_t* tree, int* rows, int N_rows, double perturb, double c, i
       }
       
       // Compute ucb
-      //ucb = (double)tree->children[i]->wins/tree->children[i]->plays + c*sqrt(log(tree->plays)/tree->children[i]->plays);
+      ucb = (double)tree->children[i]->wins/tree->children[i]->plays + c*sqrt(log(tree->plays)/tree->children[i]->plays);
       //ucb = 2*tree->children[i]->wins - tree->children[i]->plays + c*sqrt(log(tree->plays)/tree->children[i]->plays);
-      ucb = 2.*tree->children[i]->wins/tree->children[i]->plays - 1 + c*sqrt(log(tree->plays)/tree->children[i]->plays);
+      //ucb = 2.*tree->children[i]->wins/tree->children[i]->plays - 1 + c*sqrt(log(tree->plays)/tree->children[i]->plays);
       if (ucb > ucb_max) {
         ucb = ucb_max;
         max_child = tree->children[i];
