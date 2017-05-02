@@ -1,7 +1,7 @@
 clear;
 
 % Player
-player = 'xs';
+player = 'pq';
 
 % If the filename has some extension in the end
 extension = '';

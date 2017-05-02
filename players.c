@@ -367,6 +367,10 @@ double prob_nimsum(int* rows, int N_rows, int total_sticks, int phi, double pert
     b ^= rows[i];
   }
   
+  // Special case: phi can't be zero
+  if (phi == 0 && alpha > b)
+    return 0;
+  
   // Compute probabilities
   // Not perturbed alpha
   double prob1 = 0;
@@ -404,6 +408,7 @@ double prob_nimsum(int* rows, int N_rows, int total_sticks, int phi, double pert
       rows_temp[j] = i;
       prob4 += prob_nimsum(rows_temp, N_rows, total_sticks - rows[j] + i + 1, (i^rows[j]^phi), perturb);
     }
+    rows_temp[j] = rows[j];
   }
   prob4 *= perturb/(total_sticks + 1);
   
