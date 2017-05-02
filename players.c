@@ -368,7 +368,7 @@ double prob_nimsum(int* rows, int N_rows, int total_sticks, int phi, double pert
   }
   
   // Compute probabilities
-  // Not perturbed row alpha
+  // Not perturbed alpha
   double prob1 = 0;
   for (int i = 0; i < alpha; i++) {
     rows_temp[0] = i;
@@ -384,7 +384,7 @@ double prob_nimsum(int* rows, int N_rows, int total_sticks, int phi, double pert
   }
   prob2 *= perturb/(total_sticks + 1);
   
-  // Rows beta
+  // Not perturbed beta
   rows_temp[0] = rows[0];
   double prob3 = 0;
   for (int j = 1; j < N_rows; j++) {
@@ -394,11 +394,23 @@ double prob_nimsum(int* rows, int N_rows, int total_sticks, int phi, double pert
     }
     rows_temp[j] = rows[j];
   }
-  prob3 *= (1 - perturb)/total_sticks + perturb/(total_sticks + 1);
+  prob3 *= (1 - perturb)/total_sticks;
+  
+  // Perturbed beta
+  rows_temp[0] = rows[0] + 1;
+  double prob4 = 0;
+  for (int j = 1; j < N_rows; j++) {
+    for (int i = 0; j < rows[j]; i++) {
+      rows_temp[j] = i;
+      prob4 += prob_nimsum(rows_temp, N_rows, total_sticks - rows[j] + i + 1, (i^rows[j]^phi), perturb);
+    }
+  }
+  prob4 *= perturb/(total_sticks + 1);
   
   free(rows_temp);
-  return prob1 + prob2 + prob3;
+  return prob1 + prob2 + prob3 + prob4;
 }
+
 
 
 // The q-player

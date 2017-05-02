@@ -54,7 +54,7 @@ int main(int argc, char* argv[]) {
   
   // Simulation parameters
   int N_perturb = 20;
-  int N_games = 1000;
+  int N_games = 10;
   double perturb_max = 0.7;
   
   // Allocate memory
@@ -65,7 +65,7 @@ int main(int argc, char* argv[]) {
   // Create the initial board
   for (int i = 0; i < N_rows; i++) {
     //rows_init[i] = 3 + 2*i;
-    //rows_init[i] = 1.5 + 0.5*i; // good for q-player
+    rows_init[i] = 1.5 + 0.5*i; // good for q-player
   }
     
   // Begin simulations
