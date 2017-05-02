@@ -400,7 +400,7 @@ double prob_nimsum(int* rows, int N_rows, int total_sticks, int phi, double pert
   rows_temp[0] = rows[0] + 1;
   double prob4 = 0;
   for (int j = 1; j < N_rows; j++) {
-    for (int i = 0; j < rows[j]; i++) {
+    for (int i = 0; i < rows[j]; i++) {
       rows_temp[j] = i;
       prob4 += prob_nimsum(rows_temp, N_rows, total_sticks - rows[j] + i + 1, (i^rows[j]^phi), perturb);
     }
