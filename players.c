@@ -354,12 +354,6 @@ double prob_nimsum(int* rows, int N_rows, int total_sticks, int phi, double pert
   if (total_sticks == 0)
     return pow(perturb, phi)*(1 - perturb);
   
-  // Allocate rows_temp
-  int* rows_temp = (int*)malloc(N_rows*sizeof(int));
-  for (int i = 0; i < N_rows; i++) {
-    rows_temp[i] = rows[i];
-  }
-  
   // Params for recursive formula
   int alpha = rows[0];
   int b = 0;
@@ -370,6 +364,12 @@ double prob_nimsum(int* rows, int N_rows, int total_sticks, int phi, double pert
   // Special case: phi can't be zero
   if (phi == 0 && alpha > b)
     return 0;
+  
+  // Allocate rows_temp
+  int* rows_temp = (int*)malloc(N_rows*sizeof(int));
+  for (int i = 0; i < N_rows; i++) {
+    rows_temp[i] = rows[i];
+  }
   
   // Compute probabilities
   // Not perturbed alpha

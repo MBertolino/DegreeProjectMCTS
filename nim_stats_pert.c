@@ -53,8 +53,8 @@ int main(int argc, char* argv[]) {
   fflush(stdout);
   
   // Simulation parameters
-  int N_perturb = 10;
-  int N_games = 50;
+  int N_perturb = 100;
+  int N_games = 1;
   double perturb_max = 0.7;
   
   // Allocate memory
