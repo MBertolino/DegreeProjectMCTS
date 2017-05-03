@@ -344,6 +344,7 @@ void p_player(move_t* res, int* rows, int N_rows, int total_sticks, double p) {
 }
 
 
+// Returns the probability that the nim sum is equal to phi
 double prob_nimsum(int* rows, int N_rows, int total_sticks, int phi, double perturb) {
   
   // If phi is negative
@@ -354,6 +355,16 @@ double prob_nimsum(int* rows, int N_rows, int total_sticks, int phi, double pert
   if (total_sticks == 0)
     return pow(perturb, phi)*(1 - perturb);
   
+  // Special case: all sticks in the alpha heap
+  if (rows[0] == total_sticks) {
+    if (phi > rows[0])
+      return pow(perturb, phi - rows[0])*(1 - perturb)*(2 - perturb);
+    else if (phi == rows[0])
+      return (1 - perturb)*(1 - perturb);
+    else
+      return 0;
+  }
+  
   // Params for recursive formula
   int alpha = rows[0];
   int b = 0;
@@ -361,46 +372,50 @@ double prob_nimsum(int* rows, int N_rows, int total_sticks, int phi, double pert
     b ^= rows[i];
   }
   
-  // Special case: phi can't be zero
-  if (phi == 0 && alpha > b)
-    return 0;
-  
   // Allocate rows_temp
   int* rows_temp = (int*)malloc(N_rows*sizeof(int));
   for (int i = 0; i < N_rows; i++) {
     rows_temp[i] = rows[i];
   }
   
-  // Compute probabilities
-  // Not perturbed alpha
+  /* Compute probabilities */
+  // Case 1: Not perturbed alpha
   double prob1 = 0;
-  for (int i = 0; i < alpha; i++) {
+  for (int i = 0; i <= alpha-1; i++) {
     rows_temp[0] = i;
     prob1 += prob_nimsum(rows_temp, N_rows, total_sticks - alpha + i, (i + (b^phi) - alpha)^b, perturb);
   }
   prob1 *= (1 - perturb)/total_sticks;
   
-  // Perturbed row alpha
+  // Case 2: Perturbed row alpha
   double prob2 = 0;
-  for (int i = 0; i < alpha+1; i++) {
+  for (int i = 0; i <= alpha; i++) {
     rows_temp[0] = i;
     prob2 += prob_nimsum(rows_temp, N_rows, total_sticks - alpha + i, (i + (b^phi) - alpha - 1)^b, perturb);
   }
   prob2 *= perturb/(total_sticks + 1);
   
-  // Not perturbed beta
+  // Case 3: Not perturbed beta
   rows_temp[0] = rows[0];
   double prob3 = 0;
-  for (int j = 1; j < N_rows; j++) {
-    for (int i = 0; i < rows[j]; i++) {
-      rows_temp[j] = i;
-      prob3 += prob_nimsum(rows_temp, N_rows, total_sticks - rows[j] + i, (i^rows[j]^phi), perturb);
+  for (int i = 1; i < N_rows; i++) {
+    if (rows[i] == total_sticks) {
+      prob3 = pow(perturb, phi^rows[i])*(1 - perturb)*(1 - perturb);
+      break;
     }
-    rows_temp[j] = rows[j];
   }
-  prob3 *= (1 - perturb)/total_sticks;
+  if (prob3 == 0) {
+    for (int j = 1; j < N_rows; j++) {
+      for (int i = 0; i < rows[j]; i++) {
+        rows_temp[j] = i;
+        prob3 += prob_nimsum(rows_temp, N_rows, total_sticks - rows[j] + i, (i^rows[j]^phi), perturb);
+      }
+      rows_temp[j] = rows[j];
+    }
+    prob3 *= (1 - perturb)/total_sticks;
+  }
   
-  // Perturbed beta
+  // Case 4: Perturbed beta
   rows_temp[0] = rows[0] + 1;
   double prob4 = 0;
   for (int j = 1; j < N_rows; j++) {
@@ -415,7 +430,6 @@ double prob_nimsum(int* rows, int N_rows, int total_sticks, int phi, double pert
   free(rows_temp);
   return prob1 + prob2 + prob3 + prob4;
 }
-
 
 
 // The q-player
