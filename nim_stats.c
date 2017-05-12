@@ -26,6 +26,7 @@ double p2 = 1;
 double q2 = 1;
 double c2 = 100;
 
+
 int main(int argc, char* argv[]) {
   
   // Number of input arguments
@@ -48,7 +49,7 @@ int main(int argc, char* argv[]) {
     return -1;
   }
   
-  // Return variables from the players
+  // Return-variables from the players
   int row, sticks;
   move_t* res = (move_t*)malloc(sizeof(move_t));
   
@@ -65,19 +66,15 @@ int main(int argc, char* argv[]) {
   fflush(stdout);
   
   // Simulation parameters
-  int N_vals1 = 100;
+  int N_vals1 = 0;
   int N_vals2 = 0;
-  int N_games = 1000;
+  int N_games = 1;
   
   // Allocate memory
   int** wins = (int**)malloc((N_vals1+1)*sizeof(int*));
   for (int i = 0; i <= N_vals1; i++)
     wins[i] = (int*)malloc((N_vals2+1)*sizeof(int));
   int* rows = (int*)malloc(N_rows*sizeof(int));
-  
-  // Index when using random board
-  int* idx = (int*)malloc(N_rows*sizeof(int));
-  int used_sticks = 0;
   
   // Begin simulations
   for (int i = 0; i <= N_vals1; i++) {
@@ -91,36 +88,20 @@ int main(int argc, char* argv[]) {
       // Play N_games
       for (int k = 0; k < N_games; k++) {
         
-        /* Create a random board */
-        // Shuffle the indicies
+        // Initialize a random board
         int total_sticks = total_sticks_init;
-        used_sticks = 0;
-        for (int im = 0; im < N_rows; im++)
-          idx[im] = im;
+        for (int m = 0; m < N_rows; m++)
+          rows[m] = 1;
+        for (int m = 0; m < total_sticks - N_rows; m++)
+          rows[(int)((double)N_rows*rand()/(RAND_MAX+1))] += 1;
         
-        int temp, jm = 0;
-        for (int im = 0; im < N_rows; im++) {
-          jm = im + rand()%(N_rows - im);
-          temp = idx[im];
-          idx[im] = idx[jm];
-          idx[jm] = temp;
-
-          // Add one stick to each heap
-          rows[im] = 1;
-        }
-
-        // Randomly fill the board
-        for (int im = 0; im < N_rows-1; im++) {
-          rows[idx[im]] += (double)(total_sticks - used_sticks - (N_rows - (im+1)))*rand()/RAND_MAX;
-          used_sticks += rows[idx[im]];
-        }
-        rows[idx[N_rows-1]] = total_sticks - used_sticks;
+        // Randomize who starts
+        int player = 1 + 2.*rand()/(RAND_MAX+1);
         
-        // Choose which player to start
-        int player = 1 + 2.*rand()/RAND_MAX;
+        // Run the game
         while (1) {
           player = 3 - player;
-          
+            
           // Player 1
           if (player == 1) {
             switch (PLAYER1) {
@@ -144,8 +125,11 @@ int main(int argc, char* argv[]) {
             }
           }
           
-          // Randomly perturb board
-          perturb_board(N_rows, rows, &total_sticks, perturb);
+          // Randomly perturb the board
+          if ((double)rand()/(RAND_MAX+1) < perturb) {
+            rows[0]++;
+            total_sticks++;
+          }
           
           // Update board
           row = res->row;

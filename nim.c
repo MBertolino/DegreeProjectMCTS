@@ -16,7 +16,7 @@ double perturb = 0;
 
 // Define players: Human = 0, p = 1, q = 2, s = 3, x = 4, r = 5
 #define PLAYER1 0
-#define PLAYER2 4
+#define PLAYER2 5
 
 // p-value of the p-players
 double var1 = 0.5;
@@ -27,6 +27,7 @@ double c1 = 100;
 double c2 = 100;
 
 
+// Header for the function that prints the board
 void print_board(int N_rows, int* rows);
 
 
@@ -53,7 +54,7 @@ int main(int argc, char* argv[]) {
     total_sticks += rows[i];
   }
   
-  // Return variables from the players
+  // Return-variables from the players
   int player = 2;
   int row, sticks;
   move_t* res = (move_t*)malloc(sizeof(move_t));
@@ -61,6 +62,7 @@ int main(int argc, char* argv[]) {
   // Set seed
   srand(time(NULL));
   
+  // Run the game
   while (1) {
     player = 3 - player;
     
@@ -94,6 +96,12 @@ int main(int argc, char* argv[]) {
       }
     }
     
+    // Randomly perturb board
+    if ((double)rand()/(RAND_MAX+1) < perturb) {
+      rows[0]++;
+      total_sticks++;
+    }
+    
     // Update board
     row = res->row;
     sticks = res->sticks;
@@ -103,9 +111,6 @@ int main(int argc, char* argv[]) {
       printf("\nPlayer %i wins!\n", player);
       break;
     }
-    
-    // Randomly perturb board
-    perturb_board(N_rows, rows, &total_sticks, perturb);
   }
   
   // Free
