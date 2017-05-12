@@ -13,18 +13,18 @@
 #define C_GREEN  "\x1B[32m"
 
 // Choose which game to play: 0 = normal, (0 1] = perturbed
-double perturb = 0.2;
+double perturb = 0;
 
 // Define players: Human = 0, p = 1, q = 2, s = 3, x = 4, r = 5
-#define PLAYER1 4
-#define PLAYER2 1 // <-- change this value
+#define PLAYER1 1
+#define PLAYER2 3 // <-- change this value
 
 // p-, q- and c-values
 double c_min = .01;
 double c_max = 10000;
 double p2 = 1;
 double q2 = 1;
-double c2 = 100;
+double c2 = 1;
 
 
 int main(int argc, char* argv[]) {
@@ -66,7 +66,7 @@ int main(int argc, char* argv[]) {
   fflush(stdout);
   
   // Simulation parameters
-  int N_vals1 = 0;
+  int N_vals1 = 40;
   int N_vals2 = 0;
   int N_games = 1;
   

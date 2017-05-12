@@ -14,7 +14,7 @@
 
 // Define players: Human = 0, p = 1, q = 2, s = 3, x = 4, r = 5
 #define PLAYER1 1
-#define PLAYER2 2 // <-- change this value
+#define PLAYER2 3 // <-- change this value
 
 // p-value, q-value and exploration parameter c for the x-player
 double var1 = 1;
@@ -157,7 +157,7 @@ int main(int argc, char* argv[]) {
     case 4: strcat(str, "x"); break;
     case 5: strcat(str, "r"); break;
   }
-  strcat(str, "_with.csv");
+  strcat(str, ".csv");
   
   FILE* f = fopen(str, "wb");
   fprintf(f, "%d,%lf,%d,%d,%d\n", N_perturb, perturb_max, N_games, N_rows, total_sticks_init);

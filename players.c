@@ -434,11 +434,11 @@ double prob_win(int* rows, int N_rows, int total_sticks, double perturb) {
   
   // Base case: empty board
   if (total_sticks == 0)
-    return 1/(1 + perturb);
+    return 1./(1 + perturb);
   
   // Special case: all sticks in the alpha heap
   if (rows[0] == total_sticks) {
-    return perturb/(1 + perturb);
+    return (double)perturb/(1 + perturb);
   }
   
   // Allocate rows_temp
@@ -453,19 +453,18 @@ double prob_win(int* rows, int N_rows, int total_sticks, double perturb) {
     rows_temp[0] = i;
     prob1 += 1 - prob_win(rows_temp, N_rows, total_sticks - rows[0] + i, perturb);
   }
-  //prob1 *= (1 - perturb)/total_sticks + perturb/(total_sticks + 1);
-  prob1 *= (1 + total_sticks - perturb)/total_sticks;
+  prob1 *= (1 + total_sticks - perturb)/(double)total_sticks;
   
   rows_temp[0] = rows[0];
   double prob2 = 0;
   int flag = 0;
-  /*for (int i = 1; i < N_rows; i++) {
+  for (int i = 1; i < N_rows; i++) {
     if (rows[i] == total_sticks) {
-      prob2 = 1 - (1 - perturb)/(1 - perturb*perturb);
+      prob2 = 1 - 1./(1 + perturb);
       flag = 1;
       break;
     }
-  }*/
+  }
   if (flag == 0) {
     for (int j = 1; j < N_rows; j++) {
       for (int i = 0; i < rows[j]; i++) {
@@ -474,8 +473,7 @@ double prob_win(int* rows, int N_rows, int total_sticks, double perturb) {
       }
       rows_temp[j] = rows[j];
     }
-    //prob2 *= (1 - perturb)/total_sticks;
-    prob2 *= (1 + total_sticks)*(1 - perturb)/total_sticks;
+    prob2 *= (1 + total_sticks)*(1 - perturb)/(double)total_sticks;
   }
   
   rows_temp[0] = rows[0] + 1;
@@ -487,12 +485,10 @@ double prob_win(int* rows, int N_rows, int total_sticks, double perturb) {
     }
     rows_temp[j] = rows[j];
   }
-  //prob3 *= perturb/(total_sticks + 1);
   prob3 *= perturb;
   
   free(rows_temp);
-  //return (prob1 + prob2 + prob3 + perturb/(total_sticks + 1))*(total_sticks + 1)/(perturb + total_sticks + 1);
-  return (prob1 + prob2 + prob3 + perturb)/(1 + total_sticks + perturb);
+  return (double)(prob1 + prob2 + prob3 + perturb)/(1 + total_sticks + perturb);
 }
 
 

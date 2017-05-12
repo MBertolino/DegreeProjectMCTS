@@ -4,7 +4,7 @@ clear;
 player = 'pq';
 
 % If the filename has some extension in the end
-extension = '';
+extension = '_withbeta';
 
 % Import data
 filename = ['../statistics/stats_pert_' player extension '.csv'];
