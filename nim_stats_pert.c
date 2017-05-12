@@ -13,8 +13,8 @@
 #define C_GREEN  "\x1B[32m"
 
 // Define players: Human = 0, p = 1, q = 2, s = 3, x = 4, r = 5
-#define PLAYER1 2
-#define PLAYER2 1 // <-- change this value
+#define PLAYER1 1
+#define PLAYER2 2 // <-- change this value
 
 // p-value, q-value and exploration parameter c for the x-player
 double var1 = 1;
@@ -77,10 +77,10 @@ int main(int argc, char* argv[]) {
       for (int m = 0; m < N_rows; m++)
         rows[m] = 1;
       for (int m = 0; m < total_sticks - N_rows; m++)
-        rows[(int)((double)N_rows*rand()/(RAND_MAX+1))] += 1;
+        rows[(int)((double)N_rows*rand()/((double)RAND_MAX + 1))] += 1;
       
       // Randomize who starts
-      int player = 1 + 2.*rand()/(RAND_MAX+1);
+      int player = 1 + 2.*rand()/((double)RAND_MAX + 1);
       
       // Run the game
       while (1) {
@@ -110,7 +110,7 @@ int main(int argc, char* argv[]) {
         }
         
         // Randomly perturb the board
-        if ((double)rand()/(RAND_MAX+1) < perturb_max*i/N_perturb) {
+        if ((double)rand()/((double)RAND_MAX + 1) < perturb_max*i/N_perturb) {
           rows[0]++;
           total_sticks++;
         }
@@ -157,7 +157,7 @@ int main(int argc, char* argv[]) {
     case 4: strcat(str, "x"); break;
     case 5: strcat(str, "r"); break;
   }
-  strcat(str, ".csv");
+  strcat(str, "_with.csv");
   
   FILE* f = fopen(str, "wb");
   fprintf(f, "%d,%lf,%d,%d,%d\n", N_perturb, perturb_max, N_games, N_rows, total_sticks_init);

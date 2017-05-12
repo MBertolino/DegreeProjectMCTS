@@ -31,7 +31,7 @@ int random_move(int* rows, int N_rows, int total_sticks, int row, int sticks, do
     }
     
     // Make random move
-    int rand_mov = 1 + (double)total_sticks*rand()/(RAND_MAX+1);
+    int rand_mov = 1 + (double)total_sticks*rand()/((double)RAND_MAX + 1);
     for (int i = 0; i < N_rows; i++) {
       if (rows_temp[i] >= rand_mov) {
         rows_temp[i] -= rand_mov;
@@ -43,7 +43,7 @@ int random_move(int* rows, int N_rows, int total_sticks, int row, int sticks, do
     }
     
     // Randomly perturb the board
-    if ((double)rand()/(RAND_MAX+1) < perturb) {
+    if ((double)rand()/((double)RAND_MAX + 1) < perturb) {
       rows[0]++;
       total_sticks++;
     }
@@ -125,7 +125,7 @@ int monte_carlo(tree_t* tree, int* rows, int N_rows, double perturb, double c, i
     }
     
     // Simulate random moves
-    index = (double)total_sticks*rand()/(RAND_MAX+1);
+    index = (double)total_sticks*rand()/((double)RAND_MAX + 1);
     int win = random_move(rows, N_rows, total_sticks, tree->children[index]->row, tree->children[index]->sticks, perturb);
     tree->wins += win;
     tree->plays++;
@@ -167,7 +167,7 @@ int monte_carlo(tree_t* tree, int* rows, int N_rows, double perturb, double c, i
     rows_temp[max_child->row] -= max_child->sticks;
     
     // Perturb the tree
-    perturb_board = (double)rand()/(RAND_MAX+1) < perturb ? 1 : 0;
+    perturb_board = (double)rand()/((double)RAND_MAX + 1) < perturb ? 1 : 0;
     
     // Traverse down the tree
     int win = 1 - monte_carlo(max_child, rows_temp, N_rows, perturb, c, perturb_board);
@@ -318,11 +318,11 @@ void p_player(move_t* res, int* rows, int N_rows, int total_sticks, double p) {
     X ^= rows[i];
   
   // Random move
-  if (X == 0 || p < (double)rand()/(RAND_MAX+1)) {
+  if (X == 0 || p < (double)rand()/((double)RAND_MAX + 1)) {
     do {
-      row = (double)N_rows*rand()/(RAND_MAX+1);
+      row = (double)N_rows*rand()/((double)RAND_MAX + 1);
     } while (rows[row] == 0);
-    sticks = 1 + (double)rows[row]*rand()/(RAND_MAX+1);
+    sticks = 1 + (double)rows[row]*rand()/((double)RAND_MAX + 1);
     
   // Optimal move
   } else {
@@ -513,12 +513,12 @@ void q_player(move_t* res, int* rows, int N_rows, int total_sticks, double pertu
   
   // Initialize res with a random move
   do {
-    res->row = (double)N_rows*rand()/(RAND_MAX+1);
+    res->row = (double)N_rows*rand()/((double)RAND_MAX + 1);
   } while (rows[res->row] == 0);
-  res->sticks = 1 + (double)rows[res->row]*rand()/(RAND_MAX+1);
+  res->sticks = 1 + (double)rows[res->row]*rand()/((double)RAND_MAX + 1);
   
   // Return the random move with probability q
-  if ((double)rand()/(RAND_MAX+1) >= q)
+  if ((double)rand()/((double)RAND_MAX + 1) >= q)
     return;
   
   // Allocate rows_temp
@@ -593,7 +593,7 @@ void r_player(move_t* res, int* rows, int N_rows, int total_sticks) {
   }
   
   // Make a random move
-  int rand_mov = 1 + (double)total_sticks*rand()/(RAND_MAX+1);
+  int rand_mov = 1 + (double)total_sticks*rand()/((double)RAND_MAX + 1);
   for (int i = 0; i < N_rows; i++) {
     if (rows[i] >= rand_mov) {
       res->row = i;

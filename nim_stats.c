@@ -93,10 +93,10 @@ int main(int argc, char* argv[]) {
         for (int m = 0; m < N_rows; m++)
           rows[m] = 1;
         for (int m = 0; m < total_sticks - N_rows; m++)
-          rows[(int)((double)N_rows*rand()/(RAND_MAX+1))] += 1;
+          rows[(int)((double)N_rows*rand()/((double)RAND_MAX + 1))] += 1;
         
         // Randomize who starts
-        int player = 1 + 2.*rand()/(RAND_MAX+1);
+        int player = 1 + 2.*rand()/((double)RAND_MAX + 1);
         
         // Run the game
         while (1) {
@@ -126,7 +126,7 @@ int main(int argc, char* argv[]) {
           }
           
           // Randomly perturb the board
-          if ((double)rand()/(RAND_MAX+1) < perturb) {
+          if ((double)rand()/((double)RAND_MAX + 1) < perturb) {
             rows[0]++;
             total_sticks++;
           }

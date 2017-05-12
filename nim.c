@@ -97,7 +97,7 @@ int main(int argc, char* argv[]) {
     }
     
     // Randomly perturb board
-    if ((double)rand()/(RAND_MAX+1) < perturb) {
+    if ((double)rand()/((double)RAND_MAX + 1) < perturb) {
       rows[0]++;
       total_sticks++;
     }
