@@ -6,7 +6,7 @@
 
 // Simulate the game with random moves and see if this generates a win
 int random_move(int* rows, int N_rows, int total_sticks, int row, int sticks, double perturb) {
-
+  
   int win = 1;
   int* rows_temp = (int*)malloc(N_rows*sizeof(int));
   for (int i = 0; i < N_rows; i++) {
@@ -35,16 +35,16 @@ int random_move(int* rows, int N_rows, int total_sticks, int row, int sticks, do
     for (int i = 0; i < N_rows; i++) {
       if (rows_temp[i] >= rand_mov) {
         rows_temp[i] -= rand_mov;
-        total_sticks-= rand_mov;
+        total_sticks -= rand_mov;
         break;
       } else {
         rand_mov -= rows_temp[i];
       }
     }
-    
+
     // Randomly perturb the board
-    if ((double)rand()/((double)RAND_MAX + 1) < perturb) {
-      rows[0]++;
+    if ((double)rand()/RAND_MAX < perturb) {
+      rows_temp[0]++;
       total_sticks++;
     }
     
@@ -246,7 +246,7 @@ void x_player(move_t* res, int* rows, int N_rows, int total_sticks, double pertu
 
 // The s-player
 void s_player(move_t* res, int* rows, int N_rows, int total_sticks, double perturb) {
-  
+
   // See if a winning move is possible
   for (int i = 0; i < N_rows; i++) {
     if (rows[i] == 0)
